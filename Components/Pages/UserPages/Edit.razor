@@ -1,0 +1,139 @@
+﻿@page "/users/edit"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>User</h2>
+<hr />
+@if (User is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="User" OnValidSubmit="UpdateUser" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="User.Id" value="@User.Id" />
+                <div class="mb-3">
+                    <label for="username" class="form-label">UserName:</label>
+                    <InputText id="username" @bind-Value="User.UserName" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.UserName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="privelagelevel" class="form-label">PrivelageLevel:</label>
+                    <InputNumber id="privelagelevel" @bind-Value="User.Role" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.Role" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <InputText id="password" @bind-Value="User.Password" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.Password" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="firstname" class="form-label">FirstName:</label>
+                    <InputText id="firstname" @bind-Value="User.FirstName" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.FirstName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="lastname" class="form-label">LastName:</label>
+                    <InputText id="lastname" @bind-Value="User.LastName" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.LastName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="addressid" class="form-label">AddressId:</label>
+                    <InputNumber id="addressid" @bind-Value="User.AddressId" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.AddressId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="emailaddress" class="form-label">EmailAddress:</label>
+                    <InputText id="emailaddress" @bind-Value="User.EmailAddress" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.EmailAddress" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="dateofbirth" class="form-label">DateOfBirth:</label>
+                    <InputDate id="dateofbirth" @bind-Value="User.DateOfBirth" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => User.DateOfBirth" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="phonenumber" class="form-label">PhoneNumber:</label>
+                    <InputNumber id="phonenumber" @bind-Value="User.PhoneNumber" class="form-control" />
+                    <ValidationMessage For="() => User.PhoneNumber" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="shelterid" class="form-label">ShelterId:</label>
+                    <InputNumber id="shelterid" @bind-Value="User.ShelterId" class="form-control" />
+                    <ValidationMessage For="() => User.ShelterId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isactive" class="form-label">IsActive:</label>
+                    <InputCheckbox id="isactive" @bind-Value="User.IsActive" class="form-check-input" aria-required="true"/>
+                    <ValidationMessage For="() => User.IsActive" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/users">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private User? User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        User ??= await context.User.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (User is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateUser()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(User!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!UserExists(User!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/users");
+    }
+
+    private bool UserExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.User.Any(e => e.Id == id);
+    }
+}

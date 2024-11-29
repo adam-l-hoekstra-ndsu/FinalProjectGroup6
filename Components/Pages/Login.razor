@@ -1,0 +1,72 @@
+﻿@page "/login"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager NavigationManager
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<h3>Login</h3>
+
+<EditForm Model="@NewLoginModel" OnValidSubmit="Authenticate" FormName="Login Form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="NewLoginModel.Username" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" class="form-control" type="password" @bind-Value="NewLoginModel.Password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="text-danger">@errorMessage</div>
+}
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    [SupplyParameterFromForm]
+    public LoginModel NewLoginModel { get; set; } = new();
+
+    private string errorMessage;
+
+    private async Task Authenticate()
+    {
+        using var context = DbFactory.CreateDbContext();
+        var userAccount = context.User.Where(x => x.UserName == NewLoginModel.Username).FirstOrDefault();
+
+        if (userAccount is null || userAccount.Password != NewLoginModel.Password)
+        {
+            errorMessage = "Invalid UserName or Password.";
+            return;
+        }
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, NewLoginModel.Username),
+            new Claim(ClaimTypes.Role, userAccount.Role)
+        };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+        await HttpContext.SignInAsync(principal);
+        NavigationManager.NavigateTo("/");
+
+    }
+
+    public class LoginModel
+    {
+        public string? Username { get; set; }
+        public string? Password { get; set; }
+    }
+}

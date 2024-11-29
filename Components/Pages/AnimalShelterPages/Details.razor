@@ -1,0 +1,56 @@
+﻿@page "/animalshelters/details"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>AnimalShelter</h2>
+    <hr />
+    @if (animalshelter is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Picture</dt>
+            <dd class="col-sm-10">@animalshelter.Picture</dd>
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@animalshelter.Name</dd>
+            <dt class="col-sm-2">AddressId</dt>
+            <dd class="col-sm-10">@animalshelter.AddressId</dd>
+            <dt class="col-sm-2">OpeningHour</dt>
+            <dd class="col-sm-10">@animalshelter.OpeningHour</dd>
+            <dt class="col-sm-2">ClosingHour</dt>
+            <dd class="col-sm-10">@animalshelter.ClosingHour</dd>
+            <dt class="col-sm-2">IsActive</dt>
+            <dd class="col-sm-10">@animalshelter.IsActive</dd>
+        </dl>
+        <div>
+            <a href="@($"/animalshelters/edit?id={animalshelter.Id}")">Edit</a> |
+            <a href="@($"/animalshelters")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private AnimalShelter? animalshelter;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        animalshelter = await context.AnimalShelter.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (animalshelter is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

@@ -1,0 +1,40 @@
+﻿@page "/addresses"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="addresses/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Address">
+    <PropertyColumn Property="Address => Address.Id" />
+    <PropertyColumn Property="address => address.StreetAddress" />
+    <PropertyColumn Property="address => address.City" />
+    <PropertyColumn Property="address => address.State" />
+    <PropertyColumn Property="address => address.ZipCode" />
+
+    <TemplateColumn Context="address">
+        <a href="@($"addresses/edit?id={address.Id}")">Edit</a> |
+        <a href="@($"addresses/details?id={address.Id}")">Details</a> |
+        <a href="@($"addresses/delete?id={address.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private FinalProjectGroup6Context context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

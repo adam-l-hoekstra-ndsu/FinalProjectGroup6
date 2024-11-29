@@ -49,3 +49,50 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+
+/* Styling for Search Dog and Search Shelter */
+
+.shelterdog-box {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: yellow;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom right, #FFD700, #FFA500);
+}
+
+    .shelterdog-box img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px; 
+        margin-right: 1rem; 
+    }
+
+
+.shelterdog-info {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+}
+
+@media (max-width: 600px) {
+    .shelterdog-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .shelterdog-box img {
+            margin: 0 auto 1rem;
+        }
+
+    .shelterdog-info {
+        text-align: center;
+    }
+}

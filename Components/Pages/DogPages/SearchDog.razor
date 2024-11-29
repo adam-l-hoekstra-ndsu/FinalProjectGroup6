@@ -1,0 +1,130 @@
+﻿@page "/dogs/search"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Dogs</h1>
+
+<div>
+    <label for="cityFilter">Filter by City:</label>
+    <input type="text" id="cityFilter" value="@cityFilter" @oninput="e => OnFilterChanged(e, nameof(cityFilter))" placeholder="Enter city name..." />
+
+    <label for="breedFilter">Breed:</label>
+    <input type="text" id="breedFilter" value="@breedFilter" @oninput="e => OnFilterChanged(e, nameof(breedFilter))" placeholder="Enter breed..." />
+
+    <label for="genderFilter">Gender:</label>
+    <select id="genderFilter" @onchange="e => OnFilterChanged(e, nameof(genderFilter))">
+        <option value="">All</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+    </select>
+
+    <label for="spayedFilter">Spayed/Neutered:</label>
+    <select id="spayedFilter" @onchange="e => OnFilterChanged(e, nameof(spayedFilter))">
+        <option value="">All</option>
+        <option value="true">Spayed/Neutered</option>
+        <option value="false">Not Spayed/Neutered</option>
+    </select>
+</div>
+
+<div class="dogs-container">
+    @if (filteredDogs.Count == 0)
+    {
+        <h1>No dogs match your preferences.</h1>
+    }
+    else
+    {
+        @foreach (var dog in filteredDogs)
+        {
+            <div class="shelterdog-box">
+                <img src="@dog.Picture" alt="@dog.Name" class="shelterdog-image" />
+                <div class="shelterdog-info">
+                    <h3>@dog.Name</h3>
+                    <p><strong>Age: </strong> @dog.Age years</p>
+                    <p><strong>Gender:</strong> @dog.Gender, @GetSpayNeuterStatus(dog.Gender, dog.IsNeuteredSpayed)</p>
+                    <p><strong>Breed: </strong>@dog.Breed</p>
+                </div>
+                <div class="text-center">
+                    <a href="@($"dogs/details?id={dog.Id}")" class="btn btn-primary">View Profile</a>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private FinalProjectGroup6Context context = default!;
+    private List<Dog>? dogs;
+    private List<AnimalShelter>? shelters;
+    private List<Address>? addresses;
+    private List<Dog>? filteredDogs;
+
+    private string cityFilter = string.Empty;
+    private string breedFilter = string.Empty;
+    private string genderFilter = string.Empty;
+    private string spayedFilter = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        dogs = context.Dog.ToList();
+        shelters = context.AnimalShelter.ToList();
+        addresses = context.Address.ToList();
+        filteredDogs = dogs; // Initially show all dogs
+    }
+
+    private void OnFilterChanged(ChangeEventArgs e, string filterName)
+    {
+        var value = e.Value?.ToString() ?? string.Empty;
+
+        switch (filterName)
+        {
+            case nameof(cityFilter):
+                cityFilter = value;
+                break;
+            case nameof(breedFilter):
+                breedFilter = value;
+                break;
+            case nameof(genderFilter):
+                genderFilter = value;
+                break;
+            case nameof(spayedFilter):
+                spayedFilter = value;
+                break;
+        }
+
+        FilterDogs();
+    }
+
+    private void FilterDogs()
+    {
+        filteredDogs = dogs?
+            .Where(dog =>
+                (string.IsNullOrWhiteSpace(cityFilter) ||
+                    shelters.Any(s => s.Id == dog.ShelterId &&
+                        addresses.Any(a => a.Id == s.AddressId &&
+                            a.City != null &&
+                            a.City.Contains(cityFilter, StringComparison.OrdinalIgnoreCase))))
+                && (string.IsNullOrWhiteSpace(breedFilter) ||
+                    (dog.Breed != null && dog.Breed.Contains(breedFilter, StringComparison.OrdinalIgnoreCase)))
+                && (string.IsNullOrWhiteSpace(genderFilter) ||
+                    dog.Gender.Equals(genderFilter, StringComparison.OrdinalIgnoreCase))
+                && (string.IsNullOrWhiteSpace(spayedFilter) ||
+                    dog.IsNeuteredSpayed.ToString().Equals(spayedFilter, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+    }
+
+    private string GetSpayNeuterStatus(string gender, bool isSpayedOrNeutered)
+    {
+        string status = gender.Equals("female", StringComparison.OrdinalIgnoreCase) ? "spayed" : "neutered";
+        return isSpayedOrNeutered ? status : $"Not {status}";
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

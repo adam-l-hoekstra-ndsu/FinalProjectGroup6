@@ -1,0 +1,97 @@
+﻿@page "/animalshelters/search"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Animal Shelters</h1>
+
+<!-- City Filter Input -->
+<div>
+    <label for="cityFilter">Filter by City:</label>
+    <input type="text" id="cityFilter" @bind="cityFilter" @oninput="OnCityFilterChanged" placeholder="Enter city name..." />
+</div>
+
+<div class="shelters-container">
+    
+    @if (filteredShelters.Count == 0)
+    {
+        <h1>No shelters match your preferences.</h1>
+    }
+    else
+    {
+        @foreach (var shelter in filteredShelters)
+        {
+            // LINQ query to fetch the address based on AddressId
+            var address = context.Address.FirstOrDefault(a => a.Id == shelter.AddressId);
+            <div class="shelterdog-box">
+                <img src="@shelter.Picture" alt="@shelter.Name" class="shelterdog-image" />
+                <div class="shelterdog-info">
+                    <h3>@shelter.Name</h3>
+                    <!-- Display Address Information -->
+                    <p>
+                        <strong>Address:</strong>
+                        @if (address != null)
+                        {
+                            <span>&nbsp;@address.StreetAddress, @address.City, @address.State @address.ZipCode</span>
+                        }
+                        else
+                        {
+                            <span>Address not available</span>
+                        }
+                    </p>
+                    <p><strong>Opening Hour:</strong> @shelter.OpeningHour:00</p>
+                    <p><strong>Closing Hour:</strong> @shelter.ClosingHour:00</p>
+                </div>
+                <div class="text-center">
+                    <a href="@($"animalshelters/details?id={shelter.Id}")" class="btn btn-primary">View Profile</a>
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private FinalProjectGroup6Context context = default!;
+    private List<AnimalShelter>? shelters;
+    private List<Address>? addresses;
+    private List<AnimalShelter>? filteredShelters;
+    private string cityFilter = string.Empty; // User's input for filtering shelters by city
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        shelters = context.AnimalShelter.ToList();
+        addresses = context.Address.ToList();
+        filteredShelters = shelters;
+    }
+
+    private void FilterShelters()
+    {
+        if (string.IsNullOrWhiteSpace(cityFilter))
+        {
+            filteredShelters = shelters; // If the filter is empty, show all shelters
+        }
+        else
+        {
+            filteredShelters = (from shelter in shelters
+                                join address in addresses on shelter.AddressId equals address.Id
+                                where address.City != null && address.City.Contains(cityFilter, StringComparison.OrdinalIgnoreCase)
+                                select shelter)
+                                .ToList();
+        }
+    }
+    
+    private void OnCityFilterChanged(ChangeEventArgs e)
+    {
+        cityFilter = e.Value.ToString();
+        FilterShelters();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

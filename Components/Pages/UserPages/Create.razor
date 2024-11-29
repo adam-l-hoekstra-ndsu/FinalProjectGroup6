@@ -1,0 +1,94 @@
+﻿@page "/users/create"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>User</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="User" OnValidSubmit="AddUser" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="username" class="form-label">UserName:</label> 
+                <InputText id="username" @bind-Value="User.UserName" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.UserName" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="privelagelevel" class="form-label">PrivelageLevel:</label> 
+                <InputNumber id="privelagelevel" @bind-Value="User.Role" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.Role" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label> 
+                <InputText id="password" @bind-Value="User.Password" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.Password" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="firstname" class="form-label">FirstName:</label> 
+                <InputText id="firstname" @bind-Value="User.FirstName" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.FirstName" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="lastname" class="form-label">LastName:</label> 
+                <InputText id="lastname" @bind-Value="User.LastName" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.LastName" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="addressid" class="form-label">AddressId:</label> 
+                <InputNumber id="addressid" @bind-Value="User.AddressId" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.AddressId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="emailaddress" class="form-label">EmailAddress:</label> 
+                <InputText id="emailaddress" @bind-Value="User.EmailAddress" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.EmailAddress" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="dateofbirth" class="form-label">DateOfBirth:</label> 
+                <InputDate id="dateofbirth" @bind-Value="User.DateOfBirth" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => User.DateOfBirth" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="phonenumber" class="form-label">PhoneNumber:</label> 
+                <InputText id="phonenumber" @bind-Value="User.PhoneNumber" class="form-control" /> 
+                <ValidationMessage For="() => User.PhoneNumber" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="shelterid" class="form-label">ShelterId:</label> 
+                <InputNumber id="shelterid" @bind-Value="User.ShelterId" class="form-control" /> 
+                <ValidationMessage For="() => User.ShelterId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isactive" class="form-label">IsActive:</label> 
+                <InputCheckbox id="isactive" @bind-Value="User.IsActive" class="form-check-input" aria-required="true"/> 
+                <ValidationMessage For="() => User.IsActive" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/users">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private User User { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddUser()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.User.Add(User);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/users");
+    }
+}
