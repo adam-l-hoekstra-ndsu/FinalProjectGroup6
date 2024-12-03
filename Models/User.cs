@@ -11,7 +11,6 @@ namespace FinalProjectGroup6.Models
         [StringLength(60, MinimumLength = 10, ErrorMessage = "Username is invalid. It must be at least 10 characters long.")]
         public string? UserName { get; set; }
 
-        [Required()]
         public string? Role { get; set; }
 
         [Required()]

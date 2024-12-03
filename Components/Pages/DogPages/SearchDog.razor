@@ -11,13 +11,17 @@
 
 <h1>Dogs</h1>
 
+<!-- Filters for city, breed, gender, spayed status, and age range -->
 <div>
+    <!-- Filter by City -->
     <label for="cityFilter">Filter by City:</label>
     <input type="text" id="cityFilter" value="@cityFilter" @oninput="e => OnFilterChanged(e, nameof(cityFilter))" placeholder="Enter city name..." />
 
+    <!-- Filter by Breed -->
     <label for="breedFilter">Breed:</label>
     <input type="text" id="breedFilter" value="@breedFilter" @oninput="e => OnFilterChanged(e, nameof(breedFilter))" placeholder="Enter breed..." />
 
+    <!-- Filter by Gender -->
     <label for="genderFilter">Gender:</label>
     <select id="genderFilter" @onchange="e => OnFilterChanged(e, nameof(genderFilter))">
         <option value="">All</option>
@@ -25,14 +29,24 @@
         <option value="female">Female</option>
     </select>
 
+    <!-- Filter by Spayed/Neutered status -->
     <label for="spayedFilter">Spayed/Neutered:</label>
     <select id="spayedFilter" @onchange="e => OnFilterChanged(e, nameof(spayedFilter))">
         <option value="">All</option>
         <option value="true">Spayed/Neutered</option>
         <option value="false">Not Spayed/Neutered</option>
     </select>
+
+    <!-- Filter by Minimum Age -->
+    <label for="minAgeFilter">Min Age:</label>
+    <input type="number" id="minAgeFilter" value="@minAgeFilter" @oninput="e => OnFilterChanged(e, nameof(minAgeFilter))" placeholder="Min age..." />
+
+    <!-- Filter by Maximum Age -->
+    <label for="maxAgeFilter">Max Age:</label>
+    <input type="number" id="maxAgeFilter" value="@maxAgeFilter" @oninput="e => OnFilterChanged(e, nameof(maxAgeFilter))" placeholder="Max age..." />
 </div>
 
+<!-- Display filtered dogs -->
 <div class="dogs-container">
     @if (filteredDogs.Count == 0)
     {
@@ -40,17 +54,21 @@
     }
     else
     {
+        <!-- Loop through filtered dogs and display their details -->
         @foreach (var dog in filteredDogs)
         {
             <div class="shelterdog-box">
+                <!-- Display dog image -->
                 <img src="@dog.Picture" alt="@dog.Name" class="shelterdog-image" />
                 <div class="shelterdog-info">
+                    <!-- Display dog name, age, gender, spay/neuter status, and breed -->
                     <h3>@dog.Name</h3>
                     <p><strong>Age: </strong> @dog.Age years</p>
                     <p><strong>Gender:</strong> @dog.Gender, @GetSpayNeuterStatus(dog.Gender, dog.IsNeuteredSpayed)</p>
                     <p><strong>Breed: </strong>@dog.Breed</p>
                 </div>
                 <div class="text-center">
+                    <!-- Link to the dog's detailed profile page -->
                     <a href="@($"dogs/details?id={dog.Id}")" class="btn btn-primary">View Profile</a>
                 </div>
             </div>
@@ -59,30 +77,40 @@
 </div>
 
 @code {
+    // Database context for retrieving dog, shelter, and address data
     private FinalProjectGroup6Context context = default!;
-    private List<Dog>? dogs;
+    // Lists to hold data
+    private List<Dog>? dogs; 
     private List<AnimalShelter>? shelters;
-    private List<Address>? addresses;
+    private List<Address>? addresses; 
+    // List to hold dogs which match filters
     private List<Dog>? filteredDogs;
 
+    // Variables for filter criteria
     private string cityFilter = string.Empty;
     private string breedFilter = string.Empty;
     private string genderFilter = string.Empty;
     private string spayedFilter = string.Empty;
+    private int? minAgeFilter = null;
+    private int? maxAgeFilter = null;
 
+    // On initialization, load data from the database
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
         dogs = context.Dog.ToList();
         shelters = context.AnimalShelter.ToList();
         addresses = context.Address.ToList();
-        filteredDogs = dogs; // Initially show all dogs
+        // Initially show all dogs
+        filteredDogs = dogs; 
     }
 
+    // Called when any filter is changed. Updates the corresponding filter and triggers the filtering process
     private void OnFilterChanged(ChangeEventArgs e, string filterName)
     {
         var value = e.Value?.ToString() ?? string.Empty;
 
+        // Update the appropriate filter value based on the filter name
         switch (filterName)
         {
             case nameof(cityFilter):
@@ -97,34 +125,52 @@
             case nameof(spayedFilter):
                 spayedFilter = value;
                 break;
+            case nameof(minAgeFilter):
+                minAgeFilter = string.IsNullOrEmpty(value) ? (int?)null : int.Parse(value);
+                break;
+            case nameof(maxAgeFilter):
+                maxAgeFilter = string.IsNullOrEmpty(value) ? (int?)null : int.Parse(value);
+                break;
         }
 
-        FilterDogs();
+        // Apply the filters after any change
+        FilterDogs(); 
     }
 
+    // Filters the dogs based on the selected criteria
     private void FilterDogs()
     {
         filteredDogs = dogs?
             .Where(dog =>
+                // Filter by city
                 (string.IsNullOrWhiteSpace(cityFilter) ||
                     shelters.Any(s => s.Id == dog.ShelterId &&
                         addresses.Any(a => a.Id == s.AddressId &&
                             a.City != null &&
                             a.City.Contains(cityFilter, StringComparison.OrdinalIgnoreCase))))
+                // Filter by breed
                 && (string.IsNullOrWhiteSpace(breedFilter) ||
                     (dog.Breed != null && dog.Breed.Contains(breedFilter, StringComparison.OrdinalIgnoreCase)))
+                // Filter by gender
                 && (string.IsNullOrWhiteSpace(genderFilter) ||
                     dog.Gender.Equals(genderFilter, StringComparison.OrdinalIgnoreCase))
+                // Filter by spayed/neutered status
                 && (string.IsNullOrWhiteSpace(spayedFilter) ||
-                    dog.IsNeuteredSpayed.ToString().Equals(spayedFilter, StringComparison.OrdinalIgnoreCase)))
+                    dog.IsNeuteredSpayed.ToString().Equals(spayedFilter, StringComparison.OrdinalIgnoreCase))
+                // Filter by minimum age
+                && (!minAgeFilter.HasValue || dog.Age >= minAgeFilter.Value)
+                // Filter by maximum age
+                && (!maxAgeFilter.HasValue || dog.Age <= maxAgeFilter.Value))
             .ToList();
     }
 
+    // Returns the spayed/neutered status based on gender and spayed status
     private string GetSpayNeuterStatus(string gender, bool isSpayedOrNeutered)
     {
         string status = gender.Equals("female", StringComparison.OrdinalIgnoreCase) ? "spayed" : "neutered";
         return isSpayedOrNeutered ? status : $"Not {status}";
     }
 
+   
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

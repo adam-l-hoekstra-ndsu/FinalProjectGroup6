@@ -13,6 +13,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Check if the user is authenticated and sign them out if they are
         if (HttpContext.User.Identity.IsAuthenticated)
         {
             await HttpContext.SignOutAsync();

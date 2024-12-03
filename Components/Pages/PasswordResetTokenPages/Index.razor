@@ -1,0 +1,38 @@
+﻿@page "/passwordresettokens"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="passwordresettokens/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.PasswordResetToken">
+    <PropertyColumn Property="passwordresettoken => passwordresettoken.UserId" />
+    <PropertyColumn Property="passwordresettoken => passwordresettoken.Token" />
+    <PropertyColumn Property="passwordresettoken => passwordresettoken.Expiry" />
+
+    <TemplateColumn Context="passwordresettoken">
+        <a href="@($"passwordresettokens/edit?id={passwordresettoken.Id}")">Edit</a> |
+        <a href="@($"passwordresettokens/details?id={passwordresettoken.Id}")">Details</a> |
+        <a href="@($"passwordresettokens/delete?id={passwordresettoken.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private FinalProjectGroup6Context context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

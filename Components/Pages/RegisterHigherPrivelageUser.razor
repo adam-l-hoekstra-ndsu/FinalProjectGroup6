@@ -1,6 +1,9 @@
 ﻿@page "/registerhigherprivelageuser"
+@attribute [Authorize(Roles = "Administrator")]
 @rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
 @using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Services
 @using Microsoft.EntityFrameworkCore
 @using System.ComponentModel.DataAnnotations
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -135,6 +138,7 @@
 
 @code {
 
+    // Class which combines User and Address models to submit with form
     public class UserAddressViewModel : IValidatableObject
     {
         public class Role
@@ -199,12 +203,14 @@
     private string? successMessage;
     private string? errorMessage;
 
+    // Load shelter descriptions on startup
     protected override async Task OnInitializedAsync()
     {
-        await LoadShelterNames();
+        await LoadShelterDescriptions();
     }
 
-    private async Task LoadShelterNames()
+    // Get the shelter names and Ids and add them to the shelter description list to display in drop down menu
+    private async Task LoadShelterDescriptions()
     {
         using var context = DbFactory.CreateDbContext();
 
@@ -223,6 +229,7 @@
 
         try
         {
+            // Check if username or email is already registered
             bool error = false;
             if (context.User.Any(u => u.UserName == NewUserAddressModel.User.UserName))
             {
@@ -237,6 +244,7 @@
             if (error == true)
                 return;
 
+            // Set role and shelter if the user is a shelter employee
             if (NewUserAddressModel.SelectedRole.RoleString.Equals("Shelter Employee"))
             {
                 NewUserAddressModel.User.Role = "ShelterEmployee";
@@ -261,6 +269,9 @@
             // Now that the address is saved, set the AddressId in the User object
             NewUserAddressModel.User.AddressId = NewUserAddressModel.Address.Id;
 
+            // Encrypt Password
+            NewUserAddressModel.User.Password = PasswordService.HashPassword(NewUserAddressModel.User.Password);
+
             // Add User to the database
             context.User.Add(NewUserAddressModel.User);
             await context.SaveChangesAsync();
@@ -268,6 +279,7 @@
             successMessage = "User and address registered successfully!";
             errorMessage = null;
 
+            // Reset input model
             NewUserAddressModel = new();
 
         }
