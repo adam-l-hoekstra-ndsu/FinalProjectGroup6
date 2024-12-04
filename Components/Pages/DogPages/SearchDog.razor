@@ -4,8 +4,10 @@
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models
 @using FinalProjectGroup6.Data
+@using Microsoft.AspNetCore.Components.Authorization
 @implements IAsyncDisposable
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
@@ -29,6 +31,15 @@
         <option value="female">Female</option>
     </select>
 
+    <!--Filter by Size-->
+    <label for="sizeFilter">Size:</label>
+    <select id="sizeFilter" @onchange="e => OnFilterChanged(e, nameof(sizeFilter))">
+        <option value="">All</option>
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>
+        <option value="large">Large</option>
+    </select>
+
     <!-- Filter by Spayed/Neutered status -->
     <label for="spayedFilter">Spayed/Neutered:</label>
     <select id="spayedFilter" @onchange="e => OnFilterChanged(e, nameof(spayedFilter))">
@@ -39,11 +50,13 @@
 
     <!-- Filter by Minimum Age -->
     <label for="minAgeFilter">Min Age:</label>
-    <input type="number" id="minAgeFilter" value="@minAgeFilter" @oninput="e => OnFilterChanged(e, nameof(minAgeFilter))" placeholder="Min age..." />
+    <input type="number" id="minAgeFilter" value="@minAgeFilter" @oninput="e => OnFilterChanged(e, nameof(minAgeFilter))" placeholder="Min age..." step="1" min="0" />
 
     <!-- Filter by Maximum Age -->
     <label for="maxAgeFilter">Max Age:</label>
-    <input type="number" id="maxAgeFilter" value="@maxAgeFilter" @oninput="e => OnFilterChanged(e, nameof(maxAgeFilter))" placeholder="Max age..." />
+    <input type="number" id="maxAgeFilter" value="@maxAgeFilter" @oninput="e => OnFilterChanged(e, nameof(maxAgeFilter))" placeholder="Max age..." step="1" min="0" />
+
+
 </div>
 
 <!-- Display filtered dogs -->
@@ -61,11 +74,12 @@
                 <!-- Display dog image -->
                 <img src="@dog.Picture" alt="@dog.Name" class="shelterdog-image" />
                 <div class="shelterdog-info">
-                    <!-- Display dog name, age, gender, spay/neuter status, and breed -->
+                    <!-- Display dog name, age, gender, size, spay/neuter status, and breed -->
                     <h3>@dog.Name</h3>
                     <p><strong>Age: </strong> @dog.Age years</p>
                     <p><strong>Gender:</strong> @dog.Gender, @GetSpayNeuterStatus(dog.Gender, dog.IsNeuteredSpayed)</p>
                     <p><strong>Breed: </strong>@dog.Breed</p>
+                    <p><strong>Size: </strong>@dog.Size</p>
                 </div>
                 <div class="text-center">
                     <!-- Link to the dog's detailed profile page -->
@@ -90,9 +104,13 @@
     private string cityFilter = string.Empty;
     private string breedFilter = string.Empty;
     private string genderFilter = string.Empty;
+    private string sizeFilter = string.Empty;
     private string spayedFilter = string.Empty;
     private int? minAgeFilter = null;
     private int? maxAgeFilter = null;
+
+    // String to store user role
+    private string userRole;
 
     // On initialization, load data from the database
     protected override void OnInitialized()
@@ -103,6 +121,32 @@
         addresses = context.Address.ToList();
         // Initially show all dogs
         filteredDogs = dogs; 
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the Authentication State
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        // Get the user
+        var user = authState.User;
+
+        // Check if the user is authenticated
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            // Extract the role claim
+            var roleClaim = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.Role);
+            if (roleClaim != null)
+            {
+                // Set the user role
+                userRole = roleClaim.Value; 
+            }
+        }
+        else
+        {
+            // Default role for unauthenticated users
+            userRole = "Guest"; 
+        }
     }
 
     // Called when any filter is changed. Updates the corresponding filter and triggers the filtering process
@@ -125,11 +169,22 @@
             case nameof(spayedFilter):
                 spayedFilter = value;
                 break;
+            case nameof(sizeFilter):
+                sizeFilter = value;
+                break;
             case nameof(minAgeFilter):
-                minAgeFilter = string.IsNullOrEmpty(value) ? (int?)null : int.Parse(value);
+                // Can only be a non negative integer
+                if (int.TryParse(value, out var minAge))
+                    minAgeFilter = Math.Max(0, minAge); 
+                else
+                    minAgeFilter = null;
                 break;
             case nameof(maxAgeFilter):
-                maxAgeFilter = string.IsNullOrEmpty(value) ? (int?)null : int.Parse(value);
+                // Can only be a non negative integer
+                if (int.TryParse(value, out var maxAge))
+                    maxAgeFilter = Math.Max(0, maxAge);
+                else
+                    maxAgeFilter = null;
                 break;
         }
 
@@ -153,14 +208,19 @@
                     (dog.Breed != null && dog.Breed.Contains(breedFilter, StringComparison.OrdinalIgnoreCase)))
                 // Filter by gender
                 && (string.IsNullOrWhiteSpace(genderFilter) ||
-                    dog.Gender.Equals(genderFilter, StringComparison.OrdinalIgnoreCase))
+                    dog.Gender != null && dog.Gender.Equals(genderFilter, StringComparison.OrdinalIgnoreCase))
+                // Filter by size
+                && (string.IsNullOrWhiteSpace(sizeFilter) ||
+                    dog.Size != null && dog.Size.Equals(sizeFilter, StringComparison.OrdinalIgnoreCase))
                 // Filter by spayed/neutered status
                 && (string.IsNullOrWhiteSpace(spayedFilter) ||
                     dog.IsNeuteredSpayed.ToString().Equals(spayedFilter, StringComparison.OrdinalIgnoreCase))
                 // Filter by minimum age
                 && (!minAgeFilter.HasValue || dog.Age >= minAgeFilter.Value)
                 // Filter by maximum age
-                && (!maxAgeFilter.HasValue || dog.Age <= maxAgeFilter.Value))
+                && (!maxAgeFilter.HasValue || dog.Age <= maxAgeFilter.Value)
+                // Only show dogs that have their status set to available to customers and guests
+                && ((userRole.Equals("Administrator") || userRole.Equals("ShelterEmployee")) || dog.Status == 0))
             .ToList();
     }
 
