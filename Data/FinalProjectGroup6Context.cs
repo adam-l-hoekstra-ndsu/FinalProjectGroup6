@@ -14,7 +14,6 @@ namespace FinalProjectGroup6.Data
         {
         }
 
-
         public DbSet<FinalProjectGroup6.Models.Application> Application { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.AnimalShelter> AnimalShelter { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.Address> Address { get; set; } = default!;
@@ -62,6 +61,12 @@ namespace FinalProjectGroup6.Data
             modelBuilder.Entity<Message>(entity =>
             {
                 entity.ToTable("Messages"); // Specify the table name
+            });
+
+            // Map Application entity to a specific table
+            modelBuilder.Entity<Application>(entity =>
+            {
+                entity.ToTable("Application"); // Specify the table name
             });
         }
     }

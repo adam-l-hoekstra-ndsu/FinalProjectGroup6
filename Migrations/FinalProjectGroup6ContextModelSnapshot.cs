@@ -23,278 +23,279 @@ namespace FinalProjectGroup6.Migrations
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
 
-                modelBuilder.Entity("FinalProjectGroup6.Models.Application", b =>
-               {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            modelBuilder.Entity("FinalProjectGroup6.Models.Application", b =>
+           {
+               b.Property<int>("Id")
+                       .ValueGeneratedOnAdd()
+                       .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-                    
-                    b.Property<string>("Activities")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("CanProvideCare")
-                        .HasColumnType("bit");
+               b.Property<string>("Activities")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CustomerID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               b.Property<bool>("CanProvideCare")
+                       .HasColumnType("bit");
 
-                    b.Property<string>("DogID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               b.Property<string>("CustomerID")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Experience")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               b.Property<string>("DogID")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("HrsLeftAlone")
-                        .HasColumnType("int");
+               b.Property<string>("Experience")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Inside")
-                        .HasColumnType("bit");
+               b.Property<int>("HrsLeftAlone")
+                       .HasColumnType("int");
 
-                    b.Property<int>("NumPetsOwned")
-                        .HasColumnType("int");
+               b.Property<bool>("Inside")
+                       .HasColumnType("bit");
 
-                    b.Property<string>("RejectReason")
-                        .HasColumnType("nvarchar(max)");
+               b.Property<int>("NumPetsOwned")
+                       .HasColumnType("int");
 
-                    b.Property<DateOnly?>("ReviewDate")
-                        .HasColumnType("date");
+               b.Property<string>("RejectReason")
+                       .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               b.Property<DateOnly?>("ReviewDate")
+                       .HasColumnType("date");
 
-                    b.Property<DateOnly>("SubmitDate")
-                        .HasColumnType("date");
+               b.Property<string>("Status")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WhyHaveDog")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               b.Property<DateOnly>("SubmitDate")
+                       .HasColumnType("date");
 
-                    b.HasKey("Id");
+               b.Property<string>("WhyHaveDog")
+                       .IsRequired()
+                       .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Application");
+               b.HasKey("Id");
 
-                    modelBuilder.Entity("FinalProjectGroup6.Models.Address", b =>
-               {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+               b.ToTable("Application");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-                    
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+               modelBuilder.Entity("FinalProjectGroup6.Models.Address", b =>
+              {
+                  b.Property<int>("Id")
+                          .ValueGeneratedOnAdd()
+                          .HasColumnType("int");
 
-                    b.Property<string>("State")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                  SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("StreetAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                  b.Property<string>("City")
+                          .IsRequired()
+                          .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ZipCode")
-                        .HasColumnType("int");
+                  b.Property<string>("State")
+                          .IsRequired()
+                          .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                  b.Property<string>("StreetAddress")
+                          .IsRequired()
+                          .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Addresses", (string)null);
-                });
+                  b.Property<int>("ZipCode")
+                          .HasColumnType("int");
 
-            modelBuilder.Entity("FinalProjectGroup6.Models.AnimalShelter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                  b.HasKey("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                  b.ToTable("Addresses", (string)null);
+              });
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
+               modelBuilder.Entity("FinalProjectGroup6.Models.AnimalShelter", b =>
+                       {
+                           b.Property<int>("Id")
+                               .ValueGeneratedOnAdd()
+                               .HasColumnType("int");
 
-                    b.Property<int>("ClosingHour")
-                        .HasColumnType("int");
+                           SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<int>("AddressId")
+                               .HasColumnType("int");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                           b.Property<int>("ClosingHour")
+                               .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<string>("EmailAddress")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OpeningHour")
-                        .HasColumnType("int");
+                           b.Property<bool>("IsActive")
+                               .HasColumnType("bit");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<string>("Name")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Picture")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<int>("OpeningHour")
+                               .HasColumnType("int");
 
-                    b.HasKey("Id");
+                           b.Property<string>("PhoneNumber")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("AnimalShelters", (string)null);
-                });
+                           b.Property<string>("Picture")
+                               .HasColumnType("nvarchar(max)");
 
-            modelBuilder.Entity("FinalProjectGroup6.Models.Dog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                           b.HasKey("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                           b.ToTable("AnimalShelters", (string)null);
+                       });
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+               modelBuilder.Entity("FinalProjectGroup6.Models.Dog", b =>
+                       {
+                           b.Property<int>("Id")
+                               .ValueGeneratedOnAdd()
+                               .HasColumnType("int");
 
-                    b.Property<string>("Breed")
-                        .HasColumnType("nvarchar(max)");
+                           SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<int>("Age")
+                               .HasColumnType("int");
 
-                    b.Property<string>("Gender")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<string>("Breed")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                           b.Property<string>("Color")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsNeuteredSpayed")
-                        .HasColumnType("bit");
+                           b.Property<string>("Gender")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<bool>("IsActive")
+                               .HasColumnType("bit");
 
-                    b.Property<string>("Picture")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<bool>("IsNeuteredSpayed")
+                               .HasColumnType("bit");
 
-                    b.Property<int>("ShelterId")
-                        .HasColumnType("int");
+                           b.Property<string>("Name")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Size")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<string>("Picture")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                           b.Property<int>("ShelterId")
+                               .HasColumnType("int");
 
-                    b.HasKey("Id");
+                           b.Property<string>("Size")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Dogs", (string)null);
-                });
+                           b.Property<int>("Status")
+                               .HasColumnType("int");
 
-            modelBuilder.Entity("FinalProjectGroup6.Models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                           b.HasKey("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                           b.ToTable("Dogs", (string)null);
+                       });
 
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
+               modelBuilder.Entity("FinalProjectGroup6.Models.Message", b =>
+                       {
+                           b.Property<int>("Id")
+                               .ValueGeneratedOnAdd()
+                               .HasColumnType("int");
 
-                    b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
+                           SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
+                           b.Property<string>("Body")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserSentFrom")
-                        .HasColumnType("int");
+                           b.Property<string>("Subject")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserSentTo")
-                        .HasColumnType("int");
+                           b.Property<DateTime>("Timestamp")
+                               .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                           b.Property<int>("UserSentFrom")
+                               .HasColumnType("int");
 
-                    b.ToTable("Messages", (string)null);
-                });
+                           b.Property<int>("UserSentTo")
+                               .HasColumnType("int");
 
-            modelBuilder.Entity("FinalProjectGroup6.Models.PasswordResetToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                           b.HasKey("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                           b.ToTable("Messages", (string)null);
+                       });
 
-                    b.Property<DateTime>("Expiry")
-                        .HasColumnType("datetime2");
+               modelBuilder.Entity("FinalProjectGroup6.Models.PasswordResetToken", b =>
+                       {
+                           b.Property<int>("Id")
+                               .ValueGeneratedOnAdd()
+                               .HasColumnType("int");
 
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
+                           SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                           b.Property<DateTime>("Expiry")
+                               .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                           b.Property<string>("Token")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("PasswordResetTokens", (string)null);
-                });
+                           b.Property<int>("UserId")
+                               .HasColumnType("int");
 
-            modelBuilder.Entity("FinalProjectGroup6.Models.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                           b.HasKey("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                           b.ToTable("PasswordResetTokens", (string)null);
+                       });
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
+               modelBuilder.Entity("FinalProjectGroup6.Models.User", b =>
+                       {
+                           b.Property<int>("Id")
+                               .ValueGeneratedOnAdd()
+                               .HasColumnType("int");
 
-                    b.Property<DateTime>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                           SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("EmailAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<int>("AddressId")
+                               .HasColumnType("int");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                           b.Property<DateTime>("DateOfBirth")
+                               .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                           b.Property<string>("EmailAddress")
+                               .IsRequired()
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                           b.Property<string>("FirstName")
+                               .IsRequired()
+                               .HasMaxLength(60)
+                               .HasColumnType("nvarchar(60)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<bool>("IsActive")
+                               .HasColumnType("bit");
 
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<string>("LastName")
+                               .IsRequired()
+                               .HasMaxLength(60)
+                               .HasColumnType("nvarchar(60)");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
+                           b.Property<string>("Password")
+                               .IsRequired()
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ShelterId")
-                        .HasColumnType("int");
+                           b.Property<string>("PhoneNumber")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                           b.Property<string>("Role")
+                               .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                           b.Property<int?>("ShelterId")
+                               .HasColumnType("int");
 
-                    b.ToTable("Users", (string)null);
-                });
+                           b.Property<string>("UserName")
+                               .IsRequired()
+                               .HasMaxLength(60)
+                               .HasColumnType("nvarchar(60)");
+
+                           b.HasKey("Id");
+
+                           b.ToTable("Users", (string)null);
+                       });
 #pragma warning restore 612, 618
+           });
         }
     }
 }
