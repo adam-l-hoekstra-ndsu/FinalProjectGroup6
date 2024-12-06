@@ -47,7 +47,6 @@
         <option value="true">Spayed/Neutered</option>
         <option value="false">Not Spayed/Neutered</option>
     </select>
-
     <!-- Filter by Minimum Age -->
     <label for="minAgeFilter">Min Age:</label>
     <input type="number" id="minAgeFilter" value="@minAgeFilter" @oninput="e => OnFilterChanged(e, nameof(minAgeFilter))" placeholder="Min age..." step="1" min="0" />
@@ -55,8 +54,6 @@
     <!-- Filter by Maximum Age -->
     <label for="maxAgeFilter">Max Age:</label>
     <input type="number" id="maxAgeFilter" value="@maxAgeFilter" @oninput="e => OnFilterChanged(e, nameof(maxAgeFilter))" placeholder="Max age..." step="1" min="0" />
-
-
 </div>
 
 <!-- Display filtered dogs -->
@@ -83,7 +80,7 @@
                 </div>
                 <div class="text-center">
                     <!-- Link to the dog's detailed profile page -->
-                    <a href="@($"dogs/details?id={dog.Id}")" class="btn btn-primary">View Profile</a>
+                    <a href="@($"dogs/profile?id={dog.Id}")" class="btn btn-primary">View Profile</a>
                 </div>
             </div>
         }

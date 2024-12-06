@@ -33,6 +33,8 @@ namespace FinalProjectGroup6.Data
                     AddressId = addresses[0].Id,
                     OpeningHour = 9,
                     ClosingHour = 18,
+                    PhoneNumber = "6122223333",
+                    EmailAddress = "email@gmail.com",
                     IsActive = true,
                 },
                 new AnimalShelter
@@ -42,6 +44,8 @@ namespace FinalProjectGroup6.Data
                     AddressId = addresses[1].Id,
                     OpeningHour = 7,
                     ClosingHour = 17,
+                    PhoneNumber = "6124445555",
+                    EmailAddress = "fakeemail@gmail.com",
                     IsActive = true,
                 },
                 new AnimalShelter
@@ -51,6 +55,8 @@ namespace FinalProjectGroup6.Data
                     AddressId = addresses[2].Id,
                     OpeningHour = 9,
                     ClosingHour = 19,
+                    PhoneNumber = "6125556666",
+                    EmailAddress = "realemail@gmail.com",
                     IsActive = true,
                 });
 

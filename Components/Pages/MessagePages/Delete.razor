@@ -1,0 +1,71 @@
+﻿@page "/messages/delete"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>Message</h2>
+    <hr />
+    @if (message is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">UserSentFrom</dt>
+            <dd class="col-sm-10">@message.UserSentFrom</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">UserSentTo</dt>
+            <dd class="col-sm-10">@message.UserSentTo</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Timestamp</dt>
+            <dd class="col-sm-10">@message.Timestamp</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Subject</dt>
+            <dd class="col-sm-10">@message.Subject</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Body</dt>
+            <dd class="col-sm-10">@message.Body</dd>
+        </dl>
+        <EditForm method="post" Model="message" OnValidSubmit="DeleteMessage" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(message is null)">Delete</button> |
+            <a href="/messages">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private Message? message;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        message = await context.Message.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (message is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteMessage()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Message.Remove(message!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/messages");
+    }
+}

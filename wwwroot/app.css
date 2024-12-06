@@ -2,8 +2,21 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 a, .btn-link {
     color: #006bb7;
+}
+
+table {
+    width: 50%;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
 
 .btn-primary {
@@ -70,7 +83,7 @@ h1:focus {
     padding: 1rem;
     background-color: yellow;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(to bottom right, #FFD700, #FFA500);
+    background: linear-gradient(to bottom right, #fce5cdff, #f6b26bff);
 }
 
     .shelterdog-box img {
@@ -100,6 +113,49 @@ h1:focus {
         }
 
     .shelterdog-info {
+        text-align: center;
+    }
+}
+
+/* Dog Profile */
+.shelterdogprofile-box {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .shelterdogprofile-box image {
+        width: 600px;
+        height: 600px;
+        object-fit: cover;
+        border-radius: 30px;
+        margin-right: 1rem;
+    }
+
+
+.shelterdogprofile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .shelterdogprofile-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .shelterdogprofile-box img {
+            margin: 0 auto 1rem;
+        }
+
+    .shelterdogprofile-info {
         text-align: center;
     }
 }
