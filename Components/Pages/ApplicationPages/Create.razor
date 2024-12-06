@@ -1,0 +1,103 @@
+﻿@page "/adopt"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Apply to Adopt</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Application" OnValidSubmit="AddApplication" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="dogid" class="form-label">Dog ID:</label> 
+                <InputText id="dogid" @bind-Value="Application.DogID" class="form-control" /> 
+                <ValidationMessage For="() => Application.DogID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="customerid" class="form-label">Customer ID:</label> 
+                <InputText id="customerid" @bind-Value="Application.CustomerID" class="form-control" /> 
+                <ValidationMessage For="() => Application.CustomerID" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="status" class="form-label">Application Status:</label> 
+                <InputText id="status" @bind-Value="Application.Status" class="form-control" /> 
+                <ValidationMessage For="() => Application.Status" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="submitdate" class="form-label">Submission Date:</label> 
+                <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" /> 
+                <ValidationMessage For="() => Application.SubmitDate" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="reviewdate" class="form-label">Review Date:</label> 
+                <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" /> 
+                <ValidationMessage For="() => Application.ReviewDate" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="whyhavedog" class="form-label">Reason for wanting a dog:</label> 
+                <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" /> 
+                <ValidationMessage For="() => Application.WhyHaveDog" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="experience" class="form-label">Previous pet experience:</label> 
+                <InputText id="experience" @bind-Value="Application.Experience" class="form-control" /> 
+                <ValidationMessage For="() => Application.Experience" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="numpetsowned" class="form-label">Number of pets owned currently:</label> 
+                <InputNumber id="numpetsowned" @bind-Value="Application.NumPetsOwned" class="form-control" /> 
+                <ValidationMessage For="() => Application.NumPetsOwned" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="activities" class="form-label">Activities you will do with your dog:</label> 
+                <InputText id="activities" @bind-Value="Application.Activities" class="form-control" /> 
+                <ValidationMessage For="() => Application.Activities" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="inside" class="form-label">Will the dog live inside?</label> 
+                <InputCheckbox id="inside" @bind-Value="Application.Inside" class="form-check-input" /> 
+                <ValidationMessage For="() => Application.Inside" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="hrsleftalone" class="form-label">How many hours a week will the dog be left alone?</label> 
+                <InputNumber id="hrsleftalone" @bind-Value="Application.HrsLeftAlone" class="form-control" /> 
+                <ValidationMessage For="() => Application.HrsLeftAlone" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="canprovidecare" class="form-label">Can you provide veterinary care?</label> 
+                <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" /> 
+                <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="rejectreason" class="form-label">Reason for Rejection (if any):</label> 
+                <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" /> 
+                <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/applications">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Application Application { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddApplication()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Application.Add(Application);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/applications");
+    }
+}
