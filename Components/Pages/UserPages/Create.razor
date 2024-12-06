@@ -22,7 +22,7 @@
             </div>        
             <div class="mb-3">
                 <label for="privelagelevel" class="form-label">PrivelageLevel:</label> 
-                <InputNumber id="privelagelevel" @bind-Value="User.Role" class="form-control" aria-required="true"/> 
+                <InputText id="privelagelevel" @bind-Value="User.Role" class="form-control" aria-required="true"/> 
                 <ValidationMessage For="() => User.Role" class="text-danger" /> 
             </div>        
             <div class="mb-3">

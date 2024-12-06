@@ -75,7 +75,8 @@
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, NewLoginModel.Username), 
-            new Claim(ClaimTypes.Role, userAccount.Role) 
+            new Claim(ClaimTypes.Role, userAccount.Role),
+            new Claim(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
         };
 
         // Create a ClaimsIdentity and ClaimsPrincipal for user authentication

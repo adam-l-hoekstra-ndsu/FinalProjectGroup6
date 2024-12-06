@@ -42,6 +42,7 @@
 
 @code {
     private string userName = "";
+    private string userId = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,10 +57,14 @@
         {
             // Extract the name claim
             var nameClaim = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.Name);
+            var idClaim = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+
+
             if (nameClaim != null)
             {
                 // Set the user name
                 userName = nameClaim.Value;
+                userId = idClaim.Value;
             }
             else
             {
