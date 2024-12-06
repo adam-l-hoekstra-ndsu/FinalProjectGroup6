@@ -4,6 +4,7 @@ using FinalProjectGroup6.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProjectGroup6.Migrations
 {
     [DbContext(typeof(FinalProjectGroup6Context))]
-    partial class FinalProjectGroup6ContextModelSnapshot : ModelSnapshot
+    [Migration("20241201163658_ModelsMade")]
+    partial class ModelsMade
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -64,9 +67,6 @@ namespace FinalProjectGroup6.Migrations
                     b.Property<int>("ClosingHour")
                         .HasColumnType("int");
 
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -75,9 +75,6 @@ namespace FinalProjectGroup6.Migrations
 
                     b.Property<int>("OpeningHour")
                         .HasColumnType("int");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Picture")
                         .HasColumnType("nvarchar(max)");
@@ -128,34 +125,6 @@ namespace FinalProjectGroup6.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Dog");
-                });
-
-            modelBuilder.Entity("FinalProjectGroup6.Models.Message", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Body")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserSentFrom")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserSentTo")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("FinalProjectGroup6.Models.User", b =>

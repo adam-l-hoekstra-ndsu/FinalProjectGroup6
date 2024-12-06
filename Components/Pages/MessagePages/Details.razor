@@ -1,0 +1,54 @@
+﻿@page "/messages/details"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Message</h2>
+    <hr />
+    @if (message is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">UserSentFrom</dt>
+            <dd class="col-sm-10">@message.UserSentFrom</dd>
+            <dt class="col-sm-2">UserSentTo</dt>
+            <dd class="col-sm-10">@message.UserSentTo</dd>
+            <dt class="col-sm-2">Timestamp</dt>
+            <dd class="col-sm-10">@message.Timestamp</dd>
+            <dt class="col-sm-2">Subject</dt>
+            <dd class="col-sm-10">@message.Subject</dd>
+            <dt class="col-sm-2">Body</dt>
+            <dd class="col-sm-10">@message.Body</dd>
+        </dl>
+        <div>
+            <a href="@($"/messages/edit?id={message.Id}")">Edit</a> |
+            <a href="@($"/messages")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private Message? message;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        message = await context.Message.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (message is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

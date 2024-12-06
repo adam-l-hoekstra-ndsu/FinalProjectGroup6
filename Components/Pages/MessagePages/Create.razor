@@ -1,0 +1,64 @@
+﻿@page "/messages/create"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Message</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Message" OnValidSubmit="AddMessage" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="usersentfrom" class="form-label">UserSentFrom:</label> 
+                <InputNumber id="usersentfrom" @bind-Value="Message.UserSentFrom" class="form-control" /> 
+                <ValidationMessage For="() => Message.UserSentFrom" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="usersentto" class="form-label">UserSentTo:</label> 
+                <InputNumber id="usersentto" @bind-Value="Message.UserSentTo" class="form-control" /> 
+                <ValidationMessage For="() => Message.UserSentTo" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="timestamp" class="form-label">Timestamp:</label> 
+                <InputDate id="timestamp" @bind-Value="Message.Timestamp" class="form-control" /> 
+                <ValidationMessage For="() => Message.Timestamp" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="subject" class="form-label">Subject:</label> 
+                <InputText id="subject" @bind-Value="Message.Subject" class="form-control" /> 
+                <ValidationMessage For="() => Message.Subject" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="body" class="form-label">Body:</label> 
+                <InputText id="body" @bind-Value="Message.Body" class="form-control" /> 
+                <ValidationMessage For="() => Message.Body" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/messages">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Message Message { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddMessage()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Message.Add(Message);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/messages");
+    }
+}
