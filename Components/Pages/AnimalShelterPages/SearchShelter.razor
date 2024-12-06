@@ -13,41 +13,54 @@
 
 <!-- City Filter Input -->
 <div>
+    <!-- Label and input field for filtering by city -->
     <label for="cityFilter">Filter by City:</label>
     <input type="text" id="cityFilter" @bind="cityFilter" @oninput="OnCityFilterChanged" placeholder="Enter city name..." />
 </div>
 
+<!-- Display the filtered list of shelters -->
 <div class="shelters-container">
-    
+
     @if (filteredShelters.Count == 0)
     {
         <h1>No shelters match your preferences.</h1>
     }
     else
     {
+        <!-- Loop through each filtered shelter and display its information -->
         @foreach (var shelter in filteredShelters)
         {
-            // LINQ query to fetch the address based on AddressId
+            // LINQ query to fetch the address associated with the shelter using AddressId
             var address = context.Address.FirstOrDefault(a => a.Id == shelter.AddressId);
+
             <div class="shelterdog-box">
+                <!-- Display shelter image -->
                 <img src="@shelter.Picture" alt="@shelter.Name" class="shelterdog-image" />
+
                 <div class="shelterdog-info">
+                    <!-- Display shelter name -->
                     <h3>@shelter.Name</h3>
-                    <!-- Display Address Information -->
+
+                    <!-- Display the address of the shelter -->
                     <p>
                         <strong>Address:</strong>
                         @if (address != null)
                         {
+                            <!-- Show the address details if available -->
                             <span>&nbsp;@address.StreetAddress, @address.City, @address.State @address.ZipCode</span>
                         }
                         else
                         {
+                            <!-- Show a message if the address is not available -->
                             <span>Address not available</span>
                         }
                     </p>
+
+                    <!-- Display opening and closing hours -->
                     <p><strong>Opening Hour:</strong> @shelter.OpeningHour:00</p>
                     <p><strong>Closing Hour:</strong> @shelter.ClosingHour:00</p>
                 </div>
+
                 <div class="text-center">
                     <a href="@($"animalshelters/profile?id={shelter.Id}")" class="btn btn-primary">View Profile</a>
                 </div>
@@ -57,28 +70,42 @@
 </div>
 
 @code {
+    // Database context for retrieving shelter and address data
     private FinalProjectGroup6Context context = default!;
+
+    
+
+    // Lists to store shelter and address data
     private List<AnimalShelter>? shelters;
     private List<Address>? addresses;
-    private List<AnimalShelter>? filteredShelters;
-    private string cityFilter = string.Empty; // User's input for filtering shelters by city
 
+    // Filtered list of shelters based on the user's criteria
+    private List<AnimalShelter>? filteredShelters;
+
+    // User's input for filtering shelters by city
+    private string cityFilter = string.Empty;
+
+    // On initialization, load all shelters and addresses from the database
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
-        shelters = context.AnimalShelter.ToList();
+        shelters = context.AnimalShelter.ToList(); 
         addresses = context.Address.ToList();
+        // Initially, show all shelters
         filteredShelters = shelters;
     }
-
+        
+    // Filters shelters based on the city filter input
     private void FilterShelters()
     {
+        // If no filter is applied, show all shelters
         if (string.IsNullOrWhiteSpace(cityFilter))
         {
-            filteredShelters = shelters; // If the filter is empty, show all shelters
+            filteredShelters = shelters;
         }
         else
         {
+            // Apply the city filter and select shelters based on the city name
             filteredShelters = (from shelter in shelters
                                 join address in addresses on shelter.AddressId equals address.Id
                                 where address.City != null && address.City.Contains(cityFilter, StringComparison.OrdinalIgnoreCase)
@@ -86,9 +113,11 @@
                                 .ToList();
         }
     }
-    
+
+    // Handles the city filter input change event
     private void OnCityFilterChanged(ChangeEventArgs e)
     {
+        // Update the city filter value and call FilterShelters to apply the filter
         cityFilter = e.Value.ToString();
         FilterShelters();
     }

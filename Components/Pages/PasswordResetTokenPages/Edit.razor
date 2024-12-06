@@ -1,0 +1,99 @@
+﻿@page "/passwordresettokens/edit"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>PasswordResetToken</h2>
+<hr />
+@if (PasswordResetToken is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="PasswordResetToken" OnValidSubmit="UpdatePasswordResetToken" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="PasswordResetToken.Id" value="@PasswordResetToken.Id" />
+                <div class="mb-3">
+                    <label for="userid" class="form-label">UserId:</label>
+                    <InputNumber id="userid" @bind-Value="PasswordResetToken.UserId" class="form-control" />
+                    <ValidationMessage For="() => PasswordResetToken.UserId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="token" class="form-label">Token:</label>
+                    <InputText id="token" @bind-Value="PasswordResetToken.Token" class="form-control" />
+                    <ValidationMessage For="() => PasswordResetToken.Token" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="expiry" class="form-label">Expiry:</label>
+                    <InputDate id="expiry" @bind-Value="PasswordResetToken.Expiry" class="form-control" />
+                    <ValidationMessage For="() => PasswordResetToken.Expiry" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/passwordresettokens">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private PasswordResetToken? PasswordResetToken { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        PasswordResetToken ??= await context.PasswordResetToken.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (PasswordResetToken is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdatePasswordResetToken()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(PasswordResetToken!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!PasswordResetTokenExists(PasswordResetToken!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/passwordresettokens");
+    }
+
+    private bool PasswordResetTokenExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.PasswordResetToken.Any(e => e.Id == id);
+    }
+}

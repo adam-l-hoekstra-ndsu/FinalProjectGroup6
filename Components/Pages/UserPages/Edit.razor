@@ -29,7 +29,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="privelagelevel" class="form-label">PrivelageLevel:</label>
-                    <InputNumber id="privelagelevel" @bind-Value="User.Role" class="form-control" aria-required="true"/>
+                    <InputText id="privelagelevel" @bind-Value="User.Role" class="form-control" aria-required="true"/>
                     <ValidationMessage For="() => User.Role" class="text-danger" />
                 </div>
                 <div class="mb-3">
@@ -64,7 +64,7 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="phonenumber" class="form-label">PhoneNumber:</label>
-                    <InputNumber id="phonenumber" @bind-Value="User.PhoneNumber" class="form-control" />
+                    <InputText id="phonenumber" @bind-Value="User.PhoneNumber" class="form-control" />
                     <ValidationMessage For="() => User.PhoneNumber" class="text-danger" />
                 </div>
                 <div class="mb-3">

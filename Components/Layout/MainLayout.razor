@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inherits LayoutComponentBase
 
 <div class="page">
@@ -21,6 +22,10 @@
                     <a href="/logout">Logout</a>
                 </Authorized>
             </AuthorizeView>
+            <div class="username-container">
+                @userName
+            </div>
+            
         </div>
 
         <article class="content px-4">
@@ -34,3 +39,43 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    private string userName = "";
+    private string userId = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Get the Authentication State
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        // Get the user
+        var user = authState.User;
+
+        // Check if the user is authenticated
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            // Extract the name claim
+            var nameClaim = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.Name);
+            var idClaim = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+
+
+            if (nameClaim != null)
+            {
+                // Set the user name
+                userName = nameClaim.Value;
+                userId = idClaim.Value;
+            }
+            else
+            {
+                // Handle cases where the name claim is missing
+                userName = "Unknown User";
+            }
+        }
+        else
+        {
+            // Default value for unauthenticated users
+            userName = "Guest";
+        }
+    }
+}

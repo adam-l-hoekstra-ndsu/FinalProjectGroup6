@@ -10,6 +10,7 @@ namespace FinalProjectGroup6.Models
         public string? Name { get; set; }
         public string? Gender { get; set; }
         public string? Breed { get; set; }
+        public string? Size { get; set; }
         public int Age { get; set; }
         public string? Color { get; set; }
         public bool IsNeuteredSpayed { get; set; }

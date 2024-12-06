@@ -1,4 +1,5 @@
 ﻿using FinalProjectGroup6.Models;
+using FinalProjectGroup6.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinalProjectGroup6.Data
@@ -30,7 +31,7 @@ namespace FinalProjectGroup6.Data
                 {
                     UserName = "admin",
                     Role = "Administrator",
-                    Password = "AdminPassword#123",
+                    Password = PasswordService.HashPassword("AdminPassword#123"),
                     FirstName = "Matthew",
                     LastName = "Evans",
                     AddressId = addresses[3].Id,
@@ -44,7 +45,7 @@ namespace FinalProjectGroup6.Data
                 {
                     UserName = "john_doe",
                     Role = "ShelterEmployee",
-                    Password = "NotSecure#123",
+                    Password = PasswordService.HashPassword("NotSecure#123"),
                     FirstName = "John",
                     LastName = "Doe",
                     AddressId = addresses[4].Id,
@@ -58,7 +59,7 @@ namespace FinalProjectGroup6.Data
                 {
                     UserName = "jane_smith",
                     Role = "Customer",
-                    Password = "NotSecure#123",
+                    Password = PasswordService.HashPassword("NotSecure#123"),
                     FirstName = "Jane",
                     LastName = "Smith",
                     AddressId = addresses[5].Id,

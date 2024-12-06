@@ -63,7 +63,14 @@ h1:focus {
     border-color: #929292;
 }
 
-
+.username-container {
+    margin-left: 1rem; /* Pushes the username to the far right */
+    font-weight: bold;
+    gap: 1rem;
+    color: #343a40; /* Bootstrap text-secondary color */
+    padding: 0.5rem;
+    white-space: nowrap; /* Prevents the username from wrapping to the next line */
+}
 
 /* Styling for Search Dog and Search Shelter */
 

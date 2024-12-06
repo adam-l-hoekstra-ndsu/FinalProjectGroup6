@@ -6,16 +6,16 @@ namespace FinalProjectGroup6.Models
     {
         public int Id { get; set; }
 
-        [Required ()]
+        [Required (ErrorMessage = "The Street Address field is required.")]
         public string? StreetAddress { get; set; }
 
-        [Required()]
+        [Required(ErrorMessage = "The city field is required.")]
         public string? City { get; set; }
 
-        [Required()]
+        [Required(ErrorMessage = "The state field is required.")]
         public string? State { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Zip Code field is required.")]
         [RegularExpression(@"^\d{5}$", ErrorMessage = "ZIP Code is invalid.")]
         public int ZipCode { get; set; } 
     }

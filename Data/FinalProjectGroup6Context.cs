@@ -18,6 +18,7 @@ namespace FinalProjectGroup6.Data
         public DbSet<FinalProjectGroup6.Models.Address> Address { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.Dog> Dog { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.User> User { get; set; } = default!;
+        public DbSet<FinalProjectGroup6.Models.PasswordResetToken> PasswordResetToken { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.Message> Message { get; set; } = default!;
     }
 }
