@@ -38,9 +38,10 @@ else
                     <ValidationMessage For="() => Dog.Name" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="gender" class="form-label">Gender:</label>
-                    <InputText id="gender" @bind-Value="Dog.Gender" class="form-check-input" />
-                    <ValidationMessage For="() => Dog.Gender" class="text-danger" />
+                    <InputRadioGroup @bind-Value="Dog.Gender" class="form-control">
+                        <InputRadio Value="@getGender('f')" /> Female
+                        <InputRadio Value="@getGender('m')" /> Male
+                    </InputRadioGroup>
                 </div>
                 <div class="mb-3">
                     <label for="breed" class="form-label">Breed:</label>
@@ -58,7 +59,7 @@ else
                     <ValidationMessage For="() => Dog.Color" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="isneuteredsprayed" class="form-label">IsNeuteredSprayed:</label>
+                    <label for="isneuteredsprayed" class="form-label">Is Neutered/Sprayed:</label>
                     <InputCheckbox id="isneuteredsprayed" @bind-Value="Dog.IsNeuteredSpayed" class="form-check-input" />
                     <ValidationMessage For="() => Dog.IsNeuteredSpayed" class="text-danger" />
                 </div>
@@ -130,5 +131,11 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         return context.Dog.Any(e => e.Id == id);
+    }
+
+    private string getGender(char gender)
+    {
+        if (gender == 'f') return "Female";
+        return "Male";
     }
 }

@@ -1,6 +1,7 @@
 ﻿@page "/animalshelters/profile"
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
@@ -26,7 +27,7 @@
                     </tr>
                     <tr>
                         <th>Address</th>
-                        <td>PlaceholderAddress</td>
+                        <td>@address.StreetAddress</td>
                     </tr>
                     <tr>
                         <th>Opens</th>
@@ -49,7 +50,7 @@
             </div>
         <div>
             <AuthorizeView Roles="Administrator, Shelter Employee">
-                <a href="@($"/dogs/edit?id={animalshelter.Id}")">Edit</a> |
+                <a href="@($"/animalshelters/edit?id={animalshelter.Id}")">Edit</a>
             </AuthorizeView> 
         </div>
     }
@@ -57,9 +58,17 @@
 
 @code {
     private AnimalShelter? animalshelter;
+    private FinalProjectGroup6Context context = default!;
 
     [SupplyParameterFromQuery]
     private int Id { get; set; }
+
+    private Address address;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,6 +79,9 @@
         {
             NavigationManager.NavigateTo("notfound");
         }
+
+        base.OnInitialized();
+        address = context.Address.FirstOrDefault(a => a.Id == animalshelter.Id);
     }
 
     private string formatHour(int hour)
@@ -78,4 +90,5 @@
         if (hour - 12 == 0) return $"{hour} PM";
         return $"{hour} AM";
     }
+
 }
