@@ -1,4 +1,4 @@
-﻿using FinalProjectGroup6.Components;
+using FinalProjectGroup6.Components;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using FinalProjectGroup6.Data;

@@ -1,8 +1,24 @@
 {
   "dependencies": {
+    "secrets1": {
+      "type": "secrets.user"
+    },
     "mssql1": {
+      "secretStore": "LocalSecretsFile",
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:DatabaseConnection",
+      "dynamicId": null
+    },
+    "mssql2": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:FinalProjectGroup6Context"
+    },
+    "mssql3": {
+      "secretStore": "LocalSecretsFile",
+      "type": "mssql.local",
+      "connectionId": "InitialCreate",
+      "dynamicId": null
+
     }
   }
 }

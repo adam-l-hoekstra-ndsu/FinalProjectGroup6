@@ -1,0 +1,149 @@
+﻿@page "/applications/edit"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Application</h2>
+<hr />
+@if (Application is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Application" OnValidSubmit="UpdateApplication" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Application.Id" value="@Application.Id" />
+                <div class="mb-3">
+                    <label for="dogid" class="form-label">DogID:</label>
+                    <InputText id="dogid" @bind-Value="Application.DogID" class="form-control" />
+                    <ValidationMessage For="() => Application.DogID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="customerid" class="form-label">CustomerID:</label>
+                    <InputText id="customerid" @bind-Value="Application.CustomerID" class="form-control" />
+                    <ValidationMessage For="() => Application.CustomerID" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <InputText id="status" @bind-Value="Application.Status" class="form-control" />
+                    <ValidationMessage For="() => Application.Status" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="submitdate" class="form-label">SubmitDate:</label>
+                    <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" />
+                    <ValidationMessage For="() => Application.SubmitDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="reviewdate" class="form-label">ReviewDate:</label>
+                    <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" />
+                    <ValidationMessage For="() => Application.ReviewDate" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="whyhavedog" class="form-label">WhyHaveDog:</label>
+                    <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" />
+                    <ValidationMessage For="() => Application.WhyHaveDog" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="experience" class="form-label">Experience:</label>
+                    <InputText id="experience" @bind-Value="Application.Experience" class="form-control" />
+                    <ValidationMessage For="() => Application.Experience" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="numpetsowned" class="form-label">NumPetsOwned:</label>
+                    <InputNumber id="numpetsowned" @bind-Value="Application.NumPetsOwned" class="form-control" />
+                    <ValidationMessage For="() => Application.NumPetsOwned" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="activities" class="form-label">Activities:</label>
+                    <InputText id="activities" @bind-Value="Application.Activities" class="form-control" />
+                    <ValidationMessage For="() => Application.Activities" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="inside" class="form-label">Inside:</label>
+                    <InputCheckbox id="inside" @bind-Value="Application.Inside" class="form-check-input" />
+                    <ValidationMessage For="() => Application.Inside" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="hrsleftalone" class="form-label">HrsLeftAlone:</label>
+                    <InputNumber id="hrsleftalone" @bind-Value="Application.HrsLeftAlone" class="form-control" />
+                    <ValidationMessage For="() => Application.HrsLeftAlone" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="canprovidecare" class="form-label">CanProvideCare:</label>
+                    <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" />
+                    <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="rejectreason" class="form-label">RejectReason:</label>
+                    <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" />
+                    <ValidationMessage For="() => Application.RejectReason" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/applications">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Application? Application { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Application ??= await context.Application.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Application is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateApplication()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Application!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!ApplicationExists(Application!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/applications");
+    }
+
+    private bool ApplicationExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Application.Any(e => e.Id == id);
+    }
+}

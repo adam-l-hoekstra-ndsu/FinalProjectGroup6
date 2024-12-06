@@ -1,15 +1,16 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
 
+<div class="top-row ps-3 navbar navbar-light">
+@using Microsoft.AspNetCore.Components.Authorization
 
-<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">FinalProjectGroup6</a>
+        <img src="/Images/FFLOGO.png" alt="" width="55" height="48" class="d-inline-block align-text-top">
+        <a class="navbar-brand" href="">Furever Friends</a>
     </div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()" >
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
@@ -18,12 +19,26 @@
         </div>
 
         <div class="nav-item px-3">
+
             <NavLink class="nav-link" href="/animalshelters/search" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Shelters
             </NavLink>
         </div>
 
         <div class="nav-item px-3">
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="events" Match="NavLinkMatch.All">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Events
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="success-stories" Match="NavLinkMatch.All">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Success Stories
+            </NavLink>
+        </div>
+
             <NavLink class="nav-link" href="/dogs/search" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Dogs
             </NavLink>
@@ -61,6 +76,7 @@
                 </div>
             </Authorized>
         </AuthorizeView>
+
     </nav>
 </div>
 
