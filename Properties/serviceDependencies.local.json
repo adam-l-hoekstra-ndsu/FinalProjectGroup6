@@ -18,6 +18,7 @@
       "type": "mssql.local",
       "connectionId": "InitialCreate",
       "dynamicId": null
+
     }
   }
 }

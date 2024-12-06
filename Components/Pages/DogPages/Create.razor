@@ -1,0 +1,89 @@
+﻿@page "/dogs/create"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Dog</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Dog" OnValidSubmit="AddDog" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="picture" class="form-label">Picture:</label> 
+                <InputText id="picture" @bind-Value="Dog.Picture" class="form-control" /> 
+                <ValidationMessage For="() => Dog.Picture" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="status" class="form-label">Status:</label> 
+                <InputNumber id="status" @bind-Value="Dog.Status" class="form-control" /> 
+                <ValidationMessage For="() => Dog.Status" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Dog.Name" class="form-control" /> 
+                <ValidationMessage For="() => Dog.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="gender" class="form-label">Gender:</label> 
+                <InputText id="gender" @bind-Value="Dog.Gender" class="form-check-input" /> 
+                <ValidationMessage For="() => Dog.Gender" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="breed" class="form-label">Breed:</label> 
+                <InputText id="breed" @bind-Value="Dog.Breed" class="form-control" /> 
+                <ValidationMessage For="() => Dog.Breed" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="age" class="form-label">Age:</label> 
+                <InputNumber id="age" @bind-Value="Dog.Age" class="form-control" /> 
+                <ValidationMessage For="() => Dog.Age" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="color" class="form-label">Color:</label> 
+                <InputText id="color" @bind-Value="Dog.Color" class="form-control" /> 
+                <ValidationMessage For="() => Dog.Color" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isneuteredsprayed" class="form-label">IsNeuteredSprayed:</label> 
+                <InputCheckbox id="isneuteredsprayed" @bind-Value="Dog.IsNeuteredSpayed" class="form-check-input" /> 
+                <ValidationMessage For="() => Dog.IsNeuteredSpayed" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="shelterid" class="form-label">ShelterId:</label> 
+                <InputNumber id="shelterid" @bind-Value="Dog.ShelterId" class="form-control" /> 
+                <ValidationMessage For="() => Dog.ShelterId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isactive" class="form-label">IsActive:</label> 
+                <InputCheckbox id="isactive" @bind-Value="Dog.IsActive" class="form-check-input" /> 
+                <ValidationMessage For="() => Dog.IsActive" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/dogs">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Dog Dog { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddDog()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Dog.Add(Dog);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/dogs");
+    }
+}

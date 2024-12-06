@@ -1,0 +1,46 @@
+﻿@page "/dogs"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<PageTitle>Index</PageTitle>
+
+<h1>Dogs</h1>
+
+<p>
+    <a href="dogs/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Dog">
+    <PropertyColumn Property="dog => dog.Id" />
+    <PropertyColumn Property="dog => dog.Picture" />
+    <PropertyColumn Property="dog => dog.Status" />
+    <PropertyColumn Property="dog => dog.Name" />
+    <PropertyColumn Property="dog => dog.Gender" />
+    <PropertyColumn Property="dog => dog.Breed" />
+    <PropertyColumn Property="dog => dog.Age" />
+    <PropertyColumn Property="dog => dog.Color" />
+    <PropertyColumn Property="dog => dog.IsNeuteredSpayed" />
+    <PropertyColumn Property="dog => dog.ShelterId" />
+    <PropertyColumn Property="dog => dog.IsActive" />
+
+    <TemplateColumn Context="dog">
+        <a href="@($"dogs/edit?id={dog.Id}")">Edit</a> |
+        <a href="@($"dogs/details?id={dog.Id}")">Details</a> |
+        <a href="@($"dogs/delete?id={dog.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private FinalProjectGroup6Context context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
