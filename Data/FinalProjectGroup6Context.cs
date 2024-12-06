@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +14,8 @@ namespace FinalProjectGroup6.Data
         {
         }
 
+
+        public DbSet<FinalProjectGroup6.Models.Application> Application { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.AnimalShelter> AnimalShelter { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.Address> Address { get; set; } = default!;
         public DbSet<FinalProjectGroup6.Models.Dog> Dog { get; set; } = default!;

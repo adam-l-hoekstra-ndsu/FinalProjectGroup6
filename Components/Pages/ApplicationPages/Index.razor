@@ -1,0 +1,48 @@
+﻿@page "/applications"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<PageTitle>View Applications</PageTitle>
+
+<h1>View Applications</h1>
+
+<p>
+    <a href="adopt">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Application">
+    <PropertyColumn Property="application => application.DogID" />
+    <PropertyColumn Property="application => application.CustomerID" />
+    <PropertyColumn Property="application => application.Status" />
+    <PropertyColumn Property="application => application.SubmitDate" />
+    <PropertyColumn Property="application => application.ReviewDate" />
+    <PropertyColumn Property="application => application.WhyHaveDog" />
+    <PropertyColumn Property="application => application.Experience" />
+    <PropertyColumn Property="application => application.NumPetsOwned" />
+    <PropertyColumn Property="application => application.Activities" />
+    <PropertyColumn Property="application => application.Inside" />
+    <PropertyColumn Property="application => application.HrsLeftAlone" />
+    <PropertyColumn Property="application => application.CanProvideCare" />
+    <PropertyColumn Property="application => application.RejectReason" />
+
+    <TemplateColumn Context="application">
+        <a href="@($"applications/edit?id={application.Id}")">Edit</a> |
+        <a href="@($"applications/details?id={application.Id}")">Details</a> |
+        <a href="@($"applications/delete?id={application.Id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private FinalProjectGroup6Context context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
