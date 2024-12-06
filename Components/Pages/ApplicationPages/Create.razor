@@ -60,7 +60,7 @@
                 <ValidationMessage For="() => Application.Activities" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="inside" class="form-label">Will the dog live inside?</label> 
+                <label for="inside" class="form-label">Check the box below if the dog will live inside:</label> 
                 <InputCheckbox id="inside" @bind-Value="Application.Inside" class="form-check-input" /> 
                 <ValidationMessage For="() => Application.Inside" class="text-danger" /> 
             </div>        
@@ -70,7 +70,7 @@
                 <ValidationMessage For="() => Application.HrsLeftAlone" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="canprovidecare" class="form-label">Can you provide veterinary care?</label> 
+                <label for="canprovidecare" class="form-label">Check the box below if you are able to consistently provide veterinary care:</label> 
                 <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" /> 
                 <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" /> 
             </div>        
@@ -79,7 +79,7 @@
                 <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" /> 
                 <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
             </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="submit" class="btn btn-primary">Submit Adoption Application</button>
         </EditForm>
     </div>
 </div>
