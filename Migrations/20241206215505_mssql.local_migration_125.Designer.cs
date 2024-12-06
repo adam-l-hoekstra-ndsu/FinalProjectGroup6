@@ -4,6 +4,7 @@ using FinalProjectGroup6.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProjectGroup6.Migrations
 {
     [DbContext(typeof(FinalProjectGroup6Context))]
-    partial class FinalProjectGroup6ContextModelSnapshot : ModelSnapshot
+    [Migration("20241206215505_mssql.local_migration_125")]
+    partial class mssqllocal_migration_125
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
