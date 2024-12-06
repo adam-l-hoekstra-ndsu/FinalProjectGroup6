@@ -11,6 +11,11 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:FinalProjectGroup6Context"
+    },
+    "mssql3": {
+      "type": "mssql",
+      "connectionId": "InitialCreate",
+      "dynamicId": null
     }
   }
 }
