@@ -25,11 +25,15 @@
                 <InputText id="name" @bind-Value="AnimalShelter.Name" class="form-control" /> 
                 <ValidationMessage For="() => AnimalShelter.Name" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
-                <label for="addressid" class="form-label">AddressId:</label> 
-                <InputNumber id="addressid" @bind-Value="AnimalShelter.AddressId" class="form-control" /> 
-                <ValidationMessage For="() => AnimalShelter.AddressId" class="text-danger" /> 
-            </div>        
+            <div>
+                <label for="addressSelect">Address:</label>
+                <select id="addressSelect">
+                    @foreach (var address in addresses)
+                    {
+                        <option value="@address.Id">@address.StreetAddress, @address.City, @address.State, @address.ZipCode</option>
+                    }
+                </select>
+            </div>
             <div class="mb-3">
                 <label for="openinghour" class="form-label">OpeningHour:</label> 
                 <InputNumber id="openinghour" @bind-Value="AnimalShelter.OpeningHour" class="form-control" /> 
@@ -55,8 +59,16 @@
 </div>
 
 @code {
+    private List<Address>? addresses;
+
     [SupplyParameterFromForm]
     private AnimalShelter AnimalShelter { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        using var context = DbFactory.CreateDbContext();
+        addresses = context.Address.ToList();
+    }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddAnimalShelter()

@@ -26,8 +26,6 @@
         </div>
 
         <div class="nav-item px-3">
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="events" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Events
             </NavLink>
@@ -39,6 +37,7 @@
             </NavLink>
         </div>
 
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="/dogs/search" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Dogs
             </NavLink>
@@ -46,18 +45,6 @@
 
         <AuthorizeView Roles="Administrator">
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/animalshelters" Match="NavLinkMatch.All">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Animal Shelters
-                    </NavLink>
-                </div>
-
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/dogs" Match="NavLinkMatch.All">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Dogs
-                    </NavLink>
-                </div>
-
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/users" Match="NavLinkMatch.All">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Users

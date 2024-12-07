@@ -32,10 +32,14 @@ else
                     <InputText id="name" @bind-Value="AnimalShelter.Name" class="form-control" />
                     <ValidationMessage For="() => AnimalShelter.Name" class="text-danger" />
                 </div>
-                <div class="mb-3">
-                    <label for="addressid" class="form-label">AddressId:</label>
-                    <InputNumber id="addressid" @bind-Value="AnimalShelter.AddressId" class="form-control" />
-                    <ValidationMessage For="() => AnimalShelter.AddressId" class="text-danger" />
+                <div>
+                    <label for="addressSelect">Address:</label>
+                    <select id="addressSelect">
+                        @foreach (var address in addresses)
+                        {
+                            <option value="@address.Id">@address.StreetAddress, @address.City, @address.State, @address.ZipCode</option>
+                        }
+                    </select>
                 </div>
                 <div class="mb-3">
                     <label for="openinghour" class="form-label">OpeningHour:</label>
@@ -69,10 +73,12 @@ else
 }
 
 <div>
-    <a href="/animalshelters">Back to List</a>
+    <a href="/animalshelters/search">Back to List</a>
 </div>
 
 @code {
+    private List<Address>? addresses;
+
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
@@ -83,6 +89,7 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         AnimalShelter ??= await context.AnimalShelter.FirstOrDefaultAsync(m => m.Id == Id);
+        addresses = context.Address.ToList();
 
         if (AnimalShelter is null)
         {
