@@ -1,4 +1,5 @@
 ﻿@page "/animalshelters/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -55,7 +56,7 @@
 </div>
 
 <div>
-    <a href="/animalshelters">Back to List</a>
+    <a href="/animalshelters/search">Back to List</a>
 </div>
 
 @code {
@@ -76,6 +77,6 @@
         using var context = DbFactory.CreateDbContext();
         context.AnimalShelter.Add(AnimalShelter);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/animalshelters");
+        NavigationManager.NavigateTo("/animalshelters/search");
     }
 }

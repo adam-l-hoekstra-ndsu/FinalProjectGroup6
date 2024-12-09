@@ -1,4 +1,5 @@
 ﻿@page "/dogs/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -67,12 +68,12 @@ else
                 </div>
                 <div>
                         <label for="shelterSelect">Shelter:</label>
-                        <select id="shelterSelect">
+                        <InputSelect id="shelterSelect" @bind-Value="Dog.ShelterId">
                             @foreach(var shelter in shelters)
                             {
                                 <option value="@shelter.Id">@shelter.Name</option>
                             }
-                        </select>
+                        </InputSelect>
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
@@ -128,7 +129,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/dogs");
+        NavigationManager.NavigateTo("/dogs/search");
     }
 
     private bool DogExists(int id)

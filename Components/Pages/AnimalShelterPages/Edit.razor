@@ -1,4 +1,5 @@
 ﻿@page "/animalshelters/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -34,12 +35,12 @@ else
                 </div>
                 <div>
                     <label for="addressSelect">Address:</label>
-                    <select id="addressSelect">
+                    <InputSelect id="addressSelect" @bind-Value="AnimalShelter.AddressId">
                         @foreach (var address in addresses)
                         {
                             <option value="@address.Id">@address.StreetAddress, @address.City, @address.State, @address.ZipCode</option>
                         }
-                    </select>
+                    </InputSelect>
                 </div>
                 <div class="mb-3">
                     <label for="openinghour" class="form-label">OpeningHour:</label>
@@ -120,7 +121,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/animalshelters");
+        NavigationManager.NavigateTo("/animalshelters/search");
     }
 
     private bool AnimalShelterExists(int id)

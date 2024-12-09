@@ -1,4 +1,5 @@
 ﻿@page "/dogs/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -94,7 +95,7 @@
         using var context = DbFactory.CreateDbContext();
         context.Dog.Add(Dog);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/dogs");
+        NavigationManager.NavigateTo("/dogs/search");
     }
 
     private string getGender(char gender)
