@@ -80,12 +80,11 @@
                 <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
             </div>        
             <button type="submit" class="btn btn-primary">Submit Adoption Application</button>
+            <br />
+            <br />
+            <a class="btn btn-secondary" href ="@("/dogs/search")">Back to Dogs</a>
         </EditForm>
     </div>
-</div>
-
-<div>
-    <a href="/applications">Back to List</a>
 </div>
 
 @code {
