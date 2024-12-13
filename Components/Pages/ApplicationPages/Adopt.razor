@@ -16,12 +16,12 @@
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <label for="dogid" class="form-label">Dog ID:</label> 
-                <InputText id="dogid" @bind-Value="Application.DogID" class="form-control" /> 
+                <InputNumber id="dogid" @bind-Value="Application.DogID" class="form-control" /> 
                 <ValidationMessage For="() => Application.DogID" class="text-danger" /> 
             </div>        
             <div class="mb-3">
                 <label for="customerid" class="form-label">Customer ID:</label> 
-                <InputText id="customerid" @bind-Value="Application.CustomerID" class="form-control" /> 
+                <InputNumber id="customerid" @bind-Value="Application.CustomerID" class="form-control" /> 
                 <ValidationMessage For="() => Application.CustomerID" class="text-danger" /> 
             </div>        
             <div class="mb-3">

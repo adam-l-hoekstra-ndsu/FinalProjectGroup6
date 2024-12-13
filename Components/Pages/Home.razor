@@ -2,10 +2,12 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="container">
+<div class="container-fluid text-center">
 <h1>Furever Friends</h1>
 <p>Find your new best friend today!</p>
+<img class="img-responsive active" src="/Images/background.jpg" alt="Background">
 </div>
+<br />
 <div class="text-center">
      <a href="@("/dogs/search")" class="btn btn-primary">Search Dogs</a>
      <a>     </a>
@@ -48,6 +50,12 @@
         Q: How can I see the status of my application?<br />
         A: You can view the status of all current and past applications through your profile. Select the icon at the top right corner of the website, and make sure you’ve logged into your account, which can also be done by selecting this icon.
     </p>
+
+    <p>
+        Q: If I have a question about my application, who do I contact and how?<br />
+        A: To contact a shelter representative regarding your application, make sure you are logged in and select "Contact" under the correct shelter's page. To view your messages and reply to past messages, select the "Messages" tab.
+    </p>
+
     <p>
         Q: How long does it typically take for an application to be reviewed?<br />
         A: Each shelter is different, but applications are generally reviewed within 5 business days of being submitted.
@@ -57,10 +65,12 @@
 <br />
 <div class="container">
     <h2>Contact Us</h2>
-    <br />
-    <a href="@("/message-us")" class="btn btn-primary">Send a Message</a>
-    <br />
-    <p>Or</p>
-    <p>Contact us by email: realemail@fureverfriends.com</p>
-    <p>Contact us by phone: (123) 456-7890</p>
+    <p>
+        <a href="@("/message-us")" class="btn btn-primary">Send a Message</a>
+        <br /><br />
+        Or
+        <br /><br />
+        Contact us by email: realemail@fureverfriends.com<br />
+        Contact us by phone: (123) 456-7890
+    </p>
 </div>
