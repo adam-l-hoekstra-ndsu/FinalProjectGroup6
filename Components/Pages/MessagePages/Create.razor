@@ -1,4 +1,5 @@
 ﻿@page "/messages/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -20,16 +21,15 @@
                 <InputNumber id="usersentfrom" @bind-Value="Message.UserSentFrom" class="form-control" /> 
                 <ValidationMessage For="() => Message.UserSentFrom" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
-                <label for="usersentto" class="form-label">UserSentTo:</label> 
-                <InputNumber id="usersentto" @bind-Value="Message.UserSentTo" class="form-control" /> 
-                <ValidationMessage For="() => Message.UserSentTo" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="timestamp" class="form-label">Timestamp:</label> 
-                <InputDate id="timestamp" @bind-Value="Message.Timestamp" class="form-control" /> 
-                <ValidationMessage For="() => Message.Timestamp" class="text-danger" /> 
-            </div>        
+            <div>
+                <label for="userSentToSelect">To:</label>
+                <InputSelect id="userSentToSelect" @bind-Value="Message.UserSentTo">
+                    @foreach (var user in users)
+                    {
+                        <option value="@user.Id">@user.FirstName @user.LastName</option>
+                    }
+                </InputSelect>
+            </div>     
             <div class="mb-3">
                 <label for="subject" class="form-label">Subject:</label> 
                 <InputText id="subject" @bind-Value="Message.Subject" class="form-control" /> 
@@ -50,12 +50,23 @@
 </div>
 
 @code {
+    private List<User>? users;
+    private string userId = "";
+
     [SupplyParameterFromForm]
     private Message Message { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        using var context = DbFactory.CreateDbContext();
+        users = context.User.ToList();
+    }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddMessage()
     {
+        Message.Timestamp = DateTime.Now;
         using var context = DbFactory.CreateDbContext();
         context.Message.Add(Message);
         await context.SaveChangesAsync();

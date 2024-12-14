@@ -1,4 +1,5 @@
 ﻿@page "/messages"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models
@@ -15,11 +16,11 @@
 </p>
 
 <QuickGrid Class="table" Items="context.Message">
-    <PropertyColumn Property="message => message.UserSentFrom" />
-    <PropertyColumn Property="message => message.UserSentTo" />
-    <PropertyColumn Property="message => message.Timestamp" />
-    <PropertyColumn Property="message => message.Subject" />
-    <PropertyColumn Property="message => message.Body" />
+    <PropertyColumn Property="message => getUserFullName(message, true)" Title="Sent From" Sortable="true"/>
+    <PropertyColumn Property="message => getUserFullName(message, false)" Title="Sent To" Sortable="true" />
+    <PropertyColumn Property="message => message.Timestamp" Title="Time Sent" Sortable="true" />
+    <PropertyColumn Property="message => message.Subject" Title="Subject" />
+    <PropertyColumn Property="message => message.Body" Title="Message" />
 
     <TemplateColumn Context="message">
         <a href="@($"messages/edit?id={message.Id}")">Edit</a> |
@@ -29,12 +30,30 @@
 </QuickGrid>
 
 @code {
+    private List<User> users;
+
     private FinalProjectGroup6Context context = default!;
 
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
+        users = context.User.ToList();
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+
+    private string getUserFullName(Message message, bool sentFrom)
+    {
+        if(sentFrom) {
+            foreach(var user in users)
+            {
+                if (message.UserSentFrom == user.Id) return $"{user.FirstName} {user.LastName}";
+            }
+        }
+        foreach (var user in users)
+        {
+            if (message.UserSentTo == user.Id) return $"{user.FirstName} {user.LastName}";
+        }
+        return "User Not Found";
+    }
 }

@@ -46,6 +46,10 @@
                         <td>@dog.Color</td>
                     </tr>
                     <tr>
+                        <th>Size</th>
+                        <td>@dog.Size</td>
+                    </tr>
+                    <tr>
                         <th>Avalibility</th>
                         <td>@getDogStatus(dog)</td>
                     </tr>
@@ -66,7 +70,7 @@
                                 <a href="/login" class="btn btn-secondary">Login to Adopt</a>
                             </NotAuthorized>
                             <Authorized>
-                                <a href="@("/error")" class="btn btn-primary">Adopt</a>
+                                <a href="@("/dog/adopt")" class="btn btn-primary">Adopt</a>
                             </Authorized>
                         </AuthorizeView>
                     </div>
