@@ -28,7 +28,6 @@
         public string Activities { get; set; }
         public bool Inside { get; set; }
         
-        // validation for no negative values.
         public int HrsLeftAlone 
         {
             get { return hrsLeftAlone; }
