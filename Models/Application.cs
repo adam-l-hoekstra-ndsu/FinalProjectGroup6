@@ -1,19 +1,25 @@
-﻿namespace FinalProjectGroup6.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace FinalProjectGroup6.Models
 {
     public class Application
     {
         private int numPetsOwned;
         private int hrsLeftAlone;
         public int Id { get; set; }
-        public string DogID { get; set; }
-        public string CustomerID { get; set; }
+        public int DogID { get; set; }
+        public int CustomerID { get; set; }
         public string Status { get; set; }
+        [Required]
         public DateOnly SubmitDate{  get; set; }
         public DateOnly? ReviewDate{ get; set; }
+        [Required]
         public string WhyHaveDog {  get; set; }
+        [Required]
         public string Experience {  get; set; }
-        
-        // validation for no negative values.
+
+        [Required]
+
         public int NumPetsOwned
         {
             get { return numPetsOwned; }
@@ -25,9 +31,10 @@
                 }
             }
         }
+        [Required]
         public string Activities { get; set; }
         public bool Inside { get; set; }
-        
+        [Required]
         public int HrsLeftAlone 
         {
             get { return hrsLeftAlone; }

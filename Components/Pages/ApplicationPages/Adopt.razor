@@ -3,6 +3,7 @@
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Apply to Adopt</PageTitle>
 
@@ -14,6 +15,7 @@
         <EditForm method="post" Model="Application" OnValidSubmit="AddApplication" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
+
             <div class="mb-3">
                 <label for="customerid" class="form-label">Customer ID:</label> 
                 <InputNumber id="customerid" @bind-Value="Application.CustomerID" class="form-control" /> 
@@ -83,15 +85,26 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery]
+    private int id{ get; set; }
+
     [SupplyParameterFromForm]
     private Application Application { get; set; } = new();
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddApplication()
     {
+        
         using var context = DbFactory.CreateDbContext();
+        Application.DogID = id;
         context.Application.Add(Application);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/applications");
+        NavigationManager.NavigateTo("/my-applications");
+    }
+
+    private void getInitialStatus()
+    {
+        //method to set initial status to "Not Reviewed" or "Rejected" 
+        //depending on count of current pets and vet care status.
     }
 }

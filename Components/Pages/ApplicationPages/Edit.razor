@@ -3,6 +3,7 @@
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Edit</PageTitle>
 
@@ -24,12 +25,12 @@ else
                 <input type="hidden" name="Application.Id" value="@Application.Id" />
                 <div class="mb-3">
                     <label for="dogid" class="form-label">DogID:</label>
-                    <InputText id="dogid" @bind-Value="Application.DogID" class="form-control" />
+                    <InputNumber id="dogid" @bind-Value="Application.DogID" class="form-control" />
                     <ValidationMessage For="() => Application.DogID" class="text-danger" />
                 </div>
                 <div class="mb-3">
                     <label for="customerid" class="form-label">CustomerID:</label>
-                    <InputText id="customerid" @bind-Value="Application.CustomerID" class="form-control" />
+                    <InputNumber id="customerid" @bind-Value="Application.CustomerID" class="form-control" />
                     <ValidationMessage For="() => Application.CustomerID" class="text-danger" />
                 </div>
                 <div class="mb-3">
