@@ -1,9 +1,110 @@
 ﻿@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
 @using FinalProjectGroup6.Data;
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using System.Security.Claims
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 @page "/my-applications"
 
 <h3>My Applications</h3>
 
+
+@if (myApplications.Count > 0)
+{
+    <QuickGrid Class="table" Items="myApplications.AsQueryable()">
+        <PropertyColumn Property="Application => Application.CustomerID" />
+        <PropertyColumn Property="Application => Application.DogID" />
+        <PropertyColumn Property="Application => Application.Status" />
+        <PropertyColumn Property="Application => Application.SubmitDate" />
+        <PropertyColumn Property="Application => Application.ReviewDate" />
+        <PropertyColumn Property="Application => Application.WhyHaveDog" />
+        <PropertyColumn Property="Application => Application.Experience" />
+        <PropertyColumn Property="Application => Application.NumPetsOwned" />
+        <PropertyColumn Property="Application => Application.Activities" />
+        <PropertyColumn Property="Application => Application.Inside" />
+        <PropertyColumn Property="Application => Application.HrsLeftAlone" />
+        <PropertyColumn Property="Application => Application.CanProvideCare" />
+        <PropertyColumn Property="Application => Application.RejectReason" />
+
+        <TemplateColumn Context="application">
+            <a href="@($"applications/details?id={application.Id}")">Details</a>
+        </TemplateColumn>
+
+    </QuickGrid>
+
+    
+}
+else
+{
+    <p>No applications found for this user.</p>
+}
+
 @code {
+    private User? user;
+    private List<Application> myApplications = new List<Application>();
+    private FinalProjectGroup6Context context = default!;
+    private string? errorMessage = null;
+
+    [SupplyParameterFromQuery]
+    private int Id{ get; set; }
+    private string CustomerName{ get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        context = DbFactory.CreateDbContext();
+
+        try
+        {
+            // Get the current user's claims
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var userClaims = authState.User;
+
+            // Extract the user ID from the claims
+            var userIdClaim = userClaims.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var userId))
+            {
+                Console.WriteLine("User ID claim not found or invalid.");
+                NavigationManager.NavigateTo("error", forceLoad: true);
+                return;
+            }
+
+            // Fetch the user from the database
+            user = await context.User.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user is null)
+            {
+                Console.WriteLine($"User with Id {userId} not found.");
+                NavigationManager.NavigateTo("error", forceLoad: true);
+                return;
+            }
+
+            // Fetch applications for the user
+            myApplications = await context.Application
+                .Where(app => app.CustomerID == userId)
+                .ToListAsync();
+
+            Console.WriteLine($"Found {myApplications.Count} applications for user {userId}.");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+            Console.WriteLine($"An error occurred: {errorMessage}");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (context is not null)
+        {
+            await context.DisposeAsync();
+        }
+    }
+}
 
 }

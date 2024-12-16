@@ -1,6 +1,9 @@
 ﻿@page "/adopt"
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
@@ -16,21 +19,29 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
 
-            <div class="mb-3">
-                <label for="status" class="form-label">Application Status:</label> 
-                <InputText id="status" @bind-Value="Application.Status" class="form-control" /> 
-                <ValidationMessage For="() => Application.Status" class="text-danger" /> 
-            </div>        
+            <AuthorizeView roles ="Shelter Employee, Administrator">
+                <Authorized Context="authorizedUser">
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Application Status:</label> 
+                        <InputText id="status" @bind-Value="Application.Status" class="form-control" /> 
+                        <ValidationMessage For="() => Application.Status" class="text-danger" /> 
+                    </div>
+                </Authorized>
+            </AuthorizeView>
             <div class="mb-3">
                 <label for="submitdate" class="form-label">Submission Date:</label> 
                 <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" /> 
                 <ValidationMessage For="() => Application.SubmitDate" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="reviewdate" class="form-label">Review Date:</label> 
-                <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" /> 
-                <ValidationMessage For="() => Application.ReviewDate" class="text-danger" /> 
-            </div>        
+            </div> 
+            <AuthorizeView roles ="Shelter Employee, Administrator">
+                <Authorized Context="authorizedUser">
+                    <div class="mb-3">
+                        <label for="reviewdate" class="form-label">Review Date:</label> 
+                        <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" /> 
+                        <ValidationMessage For="() => Application.ReviewDate" class="text-danger" /> 
+                    </div>   
+                </Authorized>
+            </AuthorizeView>
             <div class="mb-3">
                 <label for="whyhavedog" class="form-label">Reason for wanting a dog:</label> 
                 <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" /> 
@@ -66,11 +77,15 @@
                 <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" /> 
                 <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
-                <label for="rejectreason" class="form-label">Reason for Rejection (if any):</label> 
-                <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" /> 
-                <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
-            </div>        
+            <AuthorizeView roles ="Shelter Employee, Administrator">
+                <Authorized Context="authorizedUser">
+                    <div class="mb-3">
+                        <label for="rejectreason" class="form-label">Reason for Rejection (if any):</label> 
+                        <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" /> 
+                        <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
+                    </div> 
+                </Authorized>
+            </AuthorizeView>
             <button type="submit" class="btn btn-primary">Submit Adoption Application</button>
             <br />
             <br />
@@ -81,23 +96,63 @@
 
 @code {
     [SupplyParameterFromQuery]
-    private int id{ get; set; }
+    private int dogId{ get; set; }
 
     [SupplyParameterFromForm]
     private Application Application { get; set; } = new();
 
     private async Task AddApplication()
     {
-        
+        // Set initial status based on pet count and care ability
+        getInitialStatus();
+
+        // Retrieve the currently logged-in user's ID from claims
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim is not null)
+            {
+                Application.CustomerID = int.Parse(userIdClaim.Value); // Set the CustomerID
+            }
+            else
+            {
+                // Handle case where user ID claim is missing
+                NavigationManager.NavigateTo("/error");
+                return;
+            }
+        }
+        else
+        {
+            // Handle unauthenticated user
+            NavigationManager.NavigateTo("/error");
+            return;
+        }
+
+        // Set the DogID
+        Application.DogID = dogId;
+
         using var context = DbFactory.CreateDbContext();
         context.Application.Add(Application);
         await context.SaveChangesAsync();
+
         NavigationManager.NavigateTo("/my-applications");
     }
 
     private void getInitialStatus()
     {
-        //method to set initial status to "Not Reviewed" or "Rejected" 
-        //depending on count of current pets and vet care status.
+        // Set the status to "Rejected" if number of pets is 5 or more,
+        // or if the user cannot provide care
+        if (Application.NumPetsOwned >= 5 || !Application.CanProvideCare)
+        {
+            Application.Status = "Rejected";
+        }
+        // Set status to "Not Reviewed" if less than 5 pets and can provide care
+        else if (Application.NumPetsOwned < 5 && Application.CanProvideCare)
+        {
+            Application.Status = "Not Reviewed";
+        }
     }
 }

@@ -1,4 +1,15 @@
-﻿@page "/applications/review"
+﻿@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using FinalProjectGroup6.Data;
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using System.Security.Claims
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@page "/applications/review"
 
 <h3>Review Applications</h3>
 

@@ -10,6 +10,8 @@
 <h1>Edit</h1>
 
 <h2>Application</h2>
+
+<p>After editing you will be redirected to your Review Applications Page.</p>
 <hr />
 @if (Application is null)
 {
@@ -139,7 +141,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/applications");
+        NavigationManager.NavigateTo("/applications/review");
     }
 
     private bool ApplicationExists(int id)
