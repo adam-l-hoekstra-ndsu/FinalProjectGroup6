@@ -69,12 +69,12 @@
             </div>
             <div>
                 <label for="shelterSelect">Shelter:</label>
-                <select id="shelterSelect">
+                <InputSelect id="shelterSelect" @bind-Value="Dog.ShelterId">
                     @foreach (var shelter in shelters)
                     {
                         <option value="@shelter.Id">@shelter.Name</option>
                     }
-                </select>
+                </InputSelect>
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
         </EditForm>
@@ -101,6 +101,7 @@
     private async Task AddDog()
     {
         using var context = DbFactory.CreateDbContext();
+        //Dog.IsActive = true;
         context.Dog.Add(Dog);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/dogs/search");

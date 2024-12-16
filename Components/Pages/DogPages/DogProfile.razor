@@ -78,7 +78,8 @@
             </div>
         <div>
             <AuthorizeView Roles="Administrator, Shelter Employee">
-                <a href="@($"/dogs/edit?id={dog.Id}")">Edit</a> |
+                <a href="@($"/dogs/edit?id={dog.Id}")">Edit</a>
+                <a href="@($"/dogs/delete?id={dog.Id}")">Delete</a>
             </AuthorizeView> 
         </div>
     }
@@ -103,7 +104,7 @@
     {
         using var context = DbFactory.CreateDbContext();
         dog = await context.Dog.FirstOrDefaultAsync(m => m.Id == Id);
-        shelter = context.AnimalShelter.FirstOrDefault(d => d.Id == dog.Id);
+        shelter = await context.AnimalShelter.FirstOrDefaultAsync(d => d.Id == dog.ShelterId);
 
         if (dog is null)
         {

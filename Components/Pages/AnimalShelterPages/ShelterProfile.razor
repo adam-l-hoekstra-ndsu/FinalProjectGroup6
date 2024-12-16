@@ -52,13 +52,14 @@
                     <div class="text-center">
                         <a href="@("/animalshelters/search")" class="btn btn-primary">Back to Search</a>
                         <a>     </a>
-                        <a href="@("/error")" class="btn btn-primary">Contact</a>
+                    <a href="@("/messages")" class="btn btn-primary">Contact</a>
                     </div>
                 </div>
             </div>
         <div>
             <AuthorizeView Roles="Administrator, Shelter Employee">
                 <a href="@($"/animalshelters/edit?id={animalshelter.Id}")">Edit</a>
+                <a href="@($"/animalshelters/delete?id={animalshelter.Id}")">Delete</a>
             </AuthorizeView> 
         </div>
     }

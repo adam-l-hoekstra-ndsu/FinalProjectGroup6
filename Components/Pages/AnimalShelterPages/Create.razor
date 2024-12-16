@@ -25,7 +25,7 @@
                 <label for="name" class="form-label">Name:</label> 
                 <InputText id="name" @bind-Value="AnimalShelter.Name" class="form-control" /> 
                 <ValidationMessage For="() => AnimalShelter.Name" class="text-danger" /> 
-            </div>        
+            </div>
             <div>
                 <label for="addressSelect">Address:</label>
                 <InputSelect id="addressSelect" @bind-Value="AnimalShelter.AddressId">
@@ -49,7 +49,17 @@
                 <label for="isactive" class="form-label">IsActive:</label> 
                 <InputCheckbox id="isactive" @bind-Value="AnimalShelter.IsActive" class="form-check-input" /> 
                 <ValidationMessage For="() => AnimalShelter.IsActive" class="text-danger" /> 
-            </div>        
+            </div>
+            <div class="mb-3">
+                <label for="phoneNumber" class="form-label">Phone Number:</label>
+                <InputText id="phoneNumber" @bind-Value="AnimalShelter.PhoneNumber" class="form-control" />
+                <ValidationMessage For="() => AnimalShelter.PhoneNumber" class="text-danger" />
+            </div>
+            <div class="mb-3">
+                <label for="emailAddress" class="form-label">Email Address:</label>
+                <InputText id="emailAdress" @bind-Value="AnimalShelter.EmailAddress" class="form-control" />
+                <ValidationMessage For="() => AnimalShelter.EmailAddress" class="text-danger" />
+            </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
