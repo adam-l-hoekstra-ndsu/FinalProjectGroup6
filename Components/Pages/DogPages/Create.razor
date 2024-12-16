@@ -44,6 +44,14 @@
                 <InputText id="breed" @bind-Value="Dog.Breed" class="form-control" />
                 <ValidationMessage For="() => Dog.Breed" class="text-danger" />
             </div>
+            <div>
+                <label for="sizeSelect">Size:</label>
+                <InputSelect id="sizeSelect" @bind-Value="Dog.Size">
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </InputSelect>
+            </div>
             <div class="mb-3">
                 <label for="age" class="form-label">Age:</label>
                 <InputNumber id="age" @bind-Value="Dog.Age" class="form-control" />
