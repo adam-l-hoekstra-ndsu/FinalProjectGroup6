@@ -77,7 +77,7 @@
     </div>
 
     <!-- Shelter Description (Conditional) -->
-    @if (NewUserAddressModel.SelectedRole.RoleString == "Shelter Employee")
+    @if (NewUserAddressModel.SelectedRole.RoleString == "ShelterEmployee")
     {
         <div class="form-group mb-3">
             <label for="shelterDescription">Animal Shelter:</label>
@@ -182,7 +182,7 @@
             results.AddRange(roleValidationResults);
 
             // Conditional validation for Shelter Description
-            if (SelectedRole.RoleString == "Shelter Employee")
+            if (SelectedRole.RoleString == "ShelterEmployee")
             {
                 var shelterValidationResults = new List<ValidationResult>();
                 var shelterContext = new ValidationContext(SelectedShelterName);
@@ -197,7 +197,7 @@
     [SupplyParameterFromForm]
     private UserAddressViewModel NewUserAddressModel { get; set; } = new();
 
-    private List<string> roles = new List<string> { "Shelter Employee", "Administrator" };
+    private List<string> roles = new List<string> { "ShelterEmployee", "Administrator" };
     private List<string> shelterDescriptions = new List<string>();
 
     private string? successMessage;
@@ -245,7 +245,7 @@
                 return;
 
             // Set role and shelter if the user is a shelter employee
-            if (NewUserAddressModel.SelectedRole.RoleString.Equals("Shelter Employee"))
+            if (NewUserAddressModel.SelectedRole.RoleString.Equals("ShelterEmployee"))
             {
                 NewUserAddressModel.User.Role = "ShelterEmployee";
 

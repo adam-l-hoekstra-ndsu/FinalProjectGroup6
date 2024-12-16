@@ -1,15 +1,23 @@
 .page {
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 main {
     flex: 1;
+    padding: 20px; /* Add some padding for better readability */
+    overflow: auto; /* Handle long content scrolling */
 }
 
 .sidebar {
-    background: linear-gradient(to bottom right, #fce5cdff, #f6b26bff);
+    width: 340px; /* Fixed width */
+    min-width: 340px; /* Prevent shrinking */
+    max-width: 340px; /* Prevent growing */
+    flex-shrink: 0; /* Don't allow shrinking in flex containers */
+    background: linear-gradient(to bottom right, #cc7821, #ffaa52);
+    color: black;
+    padding: 5px;
 }
 
 .top-row {

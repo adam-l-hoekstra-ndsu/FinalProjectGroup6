@@ -1,0 +1,108 @@
+﻿@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+@using FinalProjectGroup6.Data;
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using FinalProjectGroup6.Models
+@using System.Security.Claims
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@page "/applications/review"
+
+<h3>Review Applications</h3>
+
+<p>To review an application, select "Edit/Review" and update the following sections:</p>
+<p>- Review Date</p>
+<p>- Status (Approved/Rejected)</p>
+<p>- Reason for rejection (if applicable)</p>
+<p>Do not forget to save your changes!</p>
+<br />
+<p>Note: after editing or reviewing an application, you will be redirected back to this page.</p>
+
+<hr />
+
+@if (shelterApplications != null && shelterApplications.Any())
+{
+    <QuickGrid Class="table" Items="shelterApplications.AsQueryable()">
+        <PropertyColumn Property="Application => Application.CustomerID" />
+        <PropertyColumn Property="Application => Application.DogID" />
+        <PropertyColumn Property="Application => Application.Status" />
+        <PropertyColumn Property="Application => Application.SubmitDate" />
+        <PropertyColumn Property="Application => Application.ReviewDate" />
+        <PropertyColumn Property="Application => Application.WhyHaveDog" />
+        <PropertyColumn Property="Application => Application.Experience" />
+        <PropertyColumn Property="Application => Application.NumPetsOwned" />
+        <PropertyColumn Property="Application => Application.Activities" />
+        <PropertyColumn Property="Application => Application.Inside" />
+        <PropertyColumn Property="Application => Application.HrsLeftAlone" />
+        <PropertyColumn Property="Application => Application.CanProvideCare" />
+        <PropertyColumn Property="Application => Application.RejectReason" />
+
+        <TemplateColumn Context="application">
+            <a href="@($"applications/edit?id={application.Id}")">Edit/Review</a>
+            <a href="@($"applications/details?id={application.Id}")">Details</a>
+            <a href="@($"applications/delete?id={application.Id}")">Delete</a> |
+        </TemplateColumn>
+
+    </QuickGrid>
+}
+else
+{
+    <p>There are currently no applications to review.</p>
+}
+
+@code {
+    private List<Application> shelterApplications;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            var shelterIdClaim = user.FindFirst("ShelterID"); // Get ShelterID claim
+
+            if (shelterIdClaim is not null && int.TryParse(shelterIdClaim.Value, out int shelterId))
+            {
+                using var context = DbFactory.CreateDbContext();
+                var allApplications = await context.Application.ToListAsync(); // Fetch all applications
+                shelterApplications = new List<Application>();
+
+                foreach (var application in allApplications)
+                {
+                    //Console.WriteLine($"Processing Application with DogID: {application.DogID}");
+
+                    var dog = await context.Dog.FirstOrDefaultAsync(d => d.Id == application.DogID);
+
+                    if (dog == null)
+                    {
+                        Console.WriteLine($"No dog found for DogID: {application.DogID}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Found DogID: {dog.Id}, ShelterID: {dog.ShelterId}");
+                    }
+
+                    if (dog != null && dog.ShelterId == shelterId && application.Status == "Not Reviewed")
+                    {
+                        shelterApplications.Add(application);
+                    }
+                }
+
+            }
+            else
+            {
+                // Handle invalid or missing ShelterID claim
+                NavigationManager.NavigateTo("/error");
+            }
+        }
+        else
+        {
+            // Handle unauthenticated user
+            NavigationManager.NavigateTo("/error");
+        }
+    }
+}

@@ -37,6 +37,7 @@ using (var scope = app.Services.CreateScope())
     UserSeedData.Initialize(services);
     DogSeedData.Initialize(services);
     MessageSeedData.Initialize(services);
+    ApplicationSeedData.Initialize(services);
 }
 
 // Configure the HTTP request pipeline.
