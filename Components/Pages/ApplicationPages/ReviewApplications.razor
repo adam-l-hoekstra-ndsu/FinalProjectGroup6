@@ -13,11 +13,11 @@
 
 <h3>Review Applications</h3>
 
-<h1>To review an application, select "Edit/Review" and update the following sections:</h1>
-<h1>- Review Date</h1>
-<h1>- Status (Approved/Rejected)</h1>
-<h1>- Reason for rejection (if applicable)</h1>
-<h1>Do not forget to save your changes!</h1>
+<p>To review an application, select "Edit/Review" and update the following sections:</p>
+<p>- Review Date</p>
+<p>- Status (Approved/Rejected)</p>
+<p>- Reason for rejection (if applicable)</p>
+<p>Do not forget to save your changes!</p>
 <br />
 <p>Note: after editing or reviewing an application, you will be redirected back to this page.</p>
 
@@ -64,21 +64,34 @@ else
         if (user?.Identity?.IsAuthenticated == true)
         {
             var shelterIdClaim = user.FindFirst("ShelterID"); // Get ShelterID claim
-            
-                if (shelterIdClaim is not null && int.TryParse(shelterIdClaim.Value, out int shelterId))
-                {
-                    using var context = DbFactory.CreateDbContext();
+
+            if (shelterIdClaim is not null && int.TryParse(shelterIdClaim.Value, out int shelterId))
+            {
+                using var context = DbFactory.CreateDbContext();
                 var allApplications = await context.Application.ToListAsync(); // Fetch all applications
                 shelterApplications = new List<Application>();
 
                 foreach (var application in allApplications)
                 {
-                    var dog = await context.Dog.FindAsync(application.DogID); // Retrieve the Dog by ID
-                    if (dog != null && dog.ShelterId == shelterId && application.Status == "Not Reviewed") // Check ShelterID & application status
+                    //Console.WriteLine($"Processing Application with DogID: {application.DogID}");
+
+                    var dog = await context.Dog.FirstOrDefaultAsync(d => d.Id == application.DogID);
+
+                    if (dog == null)
                     {
-                        shelterApplications.Add(application); // Include the application
+                        Console.WriteLine($"No dog found for DogID: {application.DogID}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Found DogID: {dog.Id}, ShelterID: {dog.ShelterId}");
+                    }
+
+                    if (dog != null && dog.ShelterId == shelterId && application.Status == "Not Reviewed")
+                    {
+                        shelterApplications.Add(application);
                     }
                 }
+
             }
             else
             {

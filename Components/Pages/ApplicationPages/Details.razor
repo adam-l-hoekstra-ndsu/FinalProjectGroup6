@@ -54,7 +54,7 @@
                     <a href="@($"/applications")">Back to All Applications</a>
                 </Authorized>
             </AuthorizeView>
-            <AuthorizeView Roles="Shelter Employee">
+            <AuthorizeView Roles="ShelterEmployee">
                 <Authorized>
                     <a href="@($"/applications/edit?id={application.Id}")">Edit</a> |
                     <a href="@($"/applications/review")">Back to Review Applications</a>

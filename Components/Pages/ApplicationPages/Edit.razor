@@ -24,21 +24,14 @@ else
             <EditForm method="post" Model="Application" OnValidSubmit="UpdateApplication" FormName="edit" Enhance>
                 <DataAnnotationsValidator />
                 <ValidationSummary role="alert"/>
-                <input type="hidden" name="Application.Id" value="@Application.Id" />
-                <div class="mb-3">
-                    <label for="dogid" class="form-label">DogID:</label>
-                    <InputNumber id="dogid" @bind-Value="Application.DogID" class="form-control" />
-                    <ValidationMessage For="() => Application.DogID" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="customerid" class="form-label">CustomerID:</label>
-                    <InputNumber id="customerid" @bind-Value="Application.CustomerID" class="form-control" />
-                    <ValidationMessage For="() => Application.CustomerID" class="text-danger" />
-                </div>
+                
                 <div class="mb-3">
                     <label for="status" class="form-label">Status:</label>
-                    <InputText id="status" @bind-Value="Application.Status" class="form-control" />
-                    <ValidationMessage For="() => Application.Status" class="text-danger" />
+                    <InputRadioGroup @bind-Value="Application.Status" class="form-control">
+                        <InputRadio Value=@getString("Not Reviewed") /> Not Reviewed
+                        <InputRadio Value=@getString("Approved") /> Approved
+                        <InputRadio Value=@getString("Rejected") /> Rejected
+                    </InputRadioGroup>
                 </div>
                 <div class="mb-3">
                     <label for="submitdate" class="form-label">SubmitDate:</label>
@@ -97,10 +90,11 @@ else
 }
 
 <div>
-    <a href="/applications">Back to List</a>
+    <a href="@($"/applications/review")">Back to Review Applications</a>
 </div>
 
 @code {
+    private Dog? dog;
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
@@ -110,7 +104,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
+
         Application ??= await context.Application.FirstOrDefaultAsync(m => m.Id == Id);
+
+        // Assign Dog to change status.
+        dog = context.Dog.FirstOrDefault(m => m.Id == Application.DogID);
+
 
         if (Application is null)
         {
@@ -127,6 +126,15 @@ else
 
         try
         {
+            if(Application.Status == "Not Reviewed"){
+                dog.Status = 1;
+            }
+            else if (Application.Status == "Approved")
+            {
+                dog.Status = 2;
+            } else {
+                dog.Status = 0;
+            }
             await context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException)
@@ -148,5 +156,9 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         return context.Application.Any(e => e.Id == id);
+    }
+
+    private string getString(string s){
+        return s;
     }
 }

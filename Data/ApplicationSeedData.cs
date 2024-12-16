@@ -20,12 +20,15 @@ public class ApplicationSeedData
         {
             return;
         }
+        
+        var dogs = context.Dog.ToList();
+        var users = context.User.ToList();
 
         context.Application.AddRange(
             new Application
             {
-                DogID = 2,
-                CustomerID = 3,
+                DogID = dogs[1].Id,
+                CustomerID = users[2].Id,
                 Status = "Approved",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 ReviewDate = DateOnly.FromDateTime(DateTime.Now),
@@ -39,8 +42,8 @@ public class ApplicationSeedData
             },
             new Application
             {
-                DogID = 1,
-                CustomerID = 6,
+                DogID = dogs[0].Id,
+                CustomerID = users[4].Id,
                 Status = "Rejected",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 ReviewDate = DateOnly.FromDateTime(DateTime.Now),
@@ -55,8 +58,8 @@ public class ApplicationSeedData
             },
             new Application
             {
-                DogID = 4,
-                CustomerID = 4,
+                DogID = dogs[3].Id,
+                CustomerID = users[3].Id,
                 Status = "Not Reviewed",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 WhyHaveDog = "I want another dog who I can come home to after work.",
@@ -69,8 +72,8 @@ public class ApplicationSeedData
             },
             new Application
             {
-                DogID = 6,
-                CustomerID = 1,
+                DogID = dogs[5].Id,
+                CustomerID = users[0].Id,
                 Status = "Approved",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 ReviewDate = DateOnly.FromDateTime(DateTime.Now),

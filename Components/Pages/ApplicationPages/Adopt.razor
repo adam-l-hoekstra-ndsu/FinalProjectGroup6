@@ -3,6 +3,7 @@
 @using FinalProjectGroup6.Models
 @using System.Security.Claims
 @using Microsoft.AspNetCore.Components.Authorization
+@using FinalProjectGroup6.Data
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
@@ -19,29 +20,11 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
 
-            <AuthorizeView roles ="Shelter Employee, Administrator">
-                <Authorized Context="authorizedUser">
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Application Status:</label> 
-                        <InputText id="status" @bind-Value="Application.Status" class="form-control" /> 
-                        <ValidationMessage For="() => Application.Status" class="text-danger" /> 
-                    </div>
-                </Authorized>
-            </AuthorizeView>
             <div class="mb-3">
                 <label for="submitdate" class="form-label">Submission Date:</label> 
                 <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" /> 
                 <ValidationMessage For="() => Application.SubmitDate" class="text-danger" /> 
             </div> 
-            <AuthorizeView roles ="Shelter Employee, Administrator">
-                <Authorized Context="authorizedUser">
-                    <div class="mb-3">
-                        <label for="reviewdate" class="form-label">Review Date:</label> 
-                        <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" /> 
-                        <ValidationMessage For="() => Application.ReviewDate" class="text-danger" /> 
-                    </div>   
-                </Authorized>
-            </AuthorizeView>
             <div class="mb-3">
                 <label for="whyhavedog" class="form-label">Reason for wanting a dog:</label> 
                 <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" /> 
@@ -76,16 +59,7 @@
                 <label for="canprovidecare" class="form-label">Check the box below if you are able to consistently provide veterinary care:</label> 
                 <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" /> 
                 <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" /> 
-            </div>        
-            <AuthorizeView roles ="Shelter Employee, Administrator">
-                <Authorized Context="authorizedUser">
-                    <div class="mb-3">
-                        <label for="rejectreason" class="form-label">Reason for Rejection (if any):</label> 
-                        <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" /> 
-                        <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
-                    </div> 
-                </Authorized>
-            </AuthorizeView>
+            </div>
             <button type="submit" class="btn btn-primary">Submit Adoption Application</button>
             <br />
             <br />
@@ -95,11 +69,21 @@
 </div>
 
 @code {
+    private FinalProjectGroup6Context context = default;
+    private Dog? dog;
+
     [SupplyParameterFromQuery]
-    private int dogId{ get; set; }
+    private int Id{ get; set; }
 
     [SupplyParameterFromForm]
     private Application Application { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        // Assign Dog to change status.
+        dog = context.Dog.FirstOrDefault(m => m.Id == Id);
+    }
 
     private async Task AddApplication()
     {
@@ -132,9 +116,11 @@
         }
 
         // Set the DogID
-        Application.DogID = dogId;
+        Application.DogID = Id;
 
-        using var context = DbFactory.CreateDbContext();
+
+        
+
         context.Application.Add(Application);
         await context.SaveChangesAsync();
 
@@ -148,7 +134,7 @@
         if (Application.NumPetsOwned >= 5 || !Application.CanProvideCare)
         {
             Application.Status = "Rejected";
-            
+
             // Set the reason for rejection
             if(Application.CanProvideCare)
             {
@@ -168,6 +154,7 @@
         else if (Application.NumPetsOwned < 5 && Application.CanProvideCare)
         {
             Application.Status = "Not Reviewed";
+            dog.Status = 1;
         }
     }
 }

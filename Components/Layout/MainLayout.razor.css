@@ -11,13 +11,13 @@ main {
 }
 
 .sidebar {
-    width: 300px; /* Fixed width */
-    min-width: 300px; /* Prevent shrinking */
-    max-width: 300px; /* Prevent growing */
+    width: 340px; /* Fixed width */
+    min-width: 340px; /* Prevent shrinking */
+    max-width: 340px; /* Prevent growing */
     flex-shrink: 0; /* Don't allow shrinking in flex containers */
     background: linear-gradient(to bottom right, #cc7821, #ffaa52);
     color: black;
-    padding: 10px;
+    padding: 5px;
 }
 
 .top-row {

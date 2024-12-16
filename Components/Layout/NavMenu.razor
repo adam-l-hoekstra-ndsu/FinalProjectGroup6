@@ -26,8 +26,6 @@
         </div>
 
         <div class="nav-item px-3">
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="events" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Events
             </NavLink>
@@ -38,16 +36,18 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Success Stories
             </NavLink>
         </div>
-
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="/dogs/search" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Dogs
             </NavLink>
         </div>
-        <AuthorizeView Roles="Shelter Employee">
+        <AuthorizeView Roles="ShelterEmployee">
             <Authorized>
+                <div class="nav-item px-3">
                 <NavLink class="nav-link" href="/applications/review" Match="NavLinkMatch.All">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage & Review Shelter Applications
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage/Review Shelter Applications
                 </NavLink>
+                </div>
             </Authorized>
         </AuthorizeView>
 
