@@ -13,6 +13,83 @@
 
 <h3>Review Applications</h3>
 
-@code {
+<h1>To review an application, select "Edit/Review" and update the following sections:</h1>
+<h1>- Review Date</h1>
+<h1>- Status (Approved/Rejected)</h1>
+<h1>- Reason for rejection (if applicable)</h1>
+<h1>Do not forget to save your changes!</h1>
+<br />
+<p>Note: after editing or reviewing an application, you will be redirected back to this page.</p>
 
+<hr />
+
+@if (shelterApplications != null && shelterApplications.Any())
+{
+    <QuickGrid Class="table" Items="shelterApplications.AsQueryable()">
+        <PropertyColumn Property="Application => Application.CustomerID" />
+        <PropertyColumn Property="Application => Application.DogID" />
+        <PropertyColumn Property="Application => Application.Status" />
+        <PropertyColumn Property="Application => Application.SubmitDate" />
+        <PropertyColumn Property="Application => Application.ReviewDate" />
+        <PropertyColumn Property="Application => Application.WhyHaveDog" />
+        <PropertyColumn Property="Application => Application.Experience" />
+        <PropertyColumn Property="Application => Application.NumPetsOwned" />
+        <PropertyColumn Property="Application => Application.Activities" />
+        <PropertyColumn Property="Application => Application.Inside" />
+        <PropertyColumn Property="Application => Application.HrsLeftAlone" />
+        <PropertyColumn Property="Application => Application.CanProvideCare" />
+        <PropertyColumn Property="Application => Application.RejectReason" />
+
+        <TemplateColumn Context="application">
+            <a href="@($"applications/edit?id={application.Id}")">Edit/Review</a>
+            <a href="@($"applications/details?id={application.Id}")">Details</a>
+            <a href="@($"applications/delete?id={application.Id}")">Delete</a> |
+        </TemplateColumn>
+
+    </QuickGrid>
+}
+else
+{
+    <p>There are currently no applications to review.</p>
+}
+
+@code {
+    private List<Application> shelterApplications;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            var shelterIdClaim = user.FindFirst("ShelterID"); // Get ShelterID claim
+            
+                if (shelterIdClaim is not null && int.TryParse(shelterIdClaim.Value, out int shelterId))
+                {
+                    using var context = DbFactory.CreateDbContext();
+                var allApplications = await context.Application.ToListAsync(); // Fetch all applications
+                shelterApplications = new List<Application>();
+
+                foreach (var application in allApplications)
+                {
+                    var dog = await context.Dog.FindAsync(application.DogID); // Retrieve the Dog by ID
+                    if (dog != null && dog.ShelterId == shelterId && application.Status == "Not Reviewed") // Check ShelterID & application status
+                    {
+                        shelterApplications.Add(application); // Include the application
+                    }
+                }
+            }
+            else
+            {
+                // Handle invalid or missing ShelterID claim
+                NavigationManager.NavigateTo("/error");
+            }
+        }
+        else
+        {
+            // Handle unauthenticated user
+            NavigationManager.NavigateTo("/error");
+        }
+    }
 }

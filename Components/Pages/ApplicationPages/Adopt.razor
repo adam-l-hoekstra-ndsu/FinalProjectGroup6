@@ -148,6 +148,21 @@
         if (Application.NumPetsOwned >= 5 || !Application.CanProvideCare)
         {
             Application.Status = "Rejected";
+            
+            // Set the reason for rejection
+            if(Application.CanProvideCare)
+            {
+                // If the user has too many pets but can provide care
+                Application.RejectReason = "Policy: A customer can not adopt a dog if they already have 5 or more pets.";
+            }else if(Application.NumPetsOwned < 5)
+            {
+                // If the user cannot provide care but does not have too many pets
+                Application.RejectReason = "Policy: A customer can not adopt a dog if they are unable to provide consistent veterinary care.";
+            } else
+            {
+                // If the user can't provide care and also has too many pets
+                Application.RejectReason = "Policy: A customer must be able to provide veterinary care and must not already own 5 or more pets";
+            }
         }
         // Set status to "Not Reviewed" if less than 5 pets and can provide care
         else if (Application.NumPetsOwned < 5 && Application.CanProvideCare)

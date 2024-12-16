@@ -51,17 +51,18 @@
             <AuthorizeView Roles ="Administrator">
                 <Authorized>
                     <a href="@($"/applications/edit?id={application.Id}")">Edit</a> |
-                    <a href="@($"applications/delete?id={application.Id}")">Delete</a> |
                     <a href="@($"/applications")">Back to All Applications</a>
                 </Authorized>
             </AuthorizeView>
-            <a href="@($"/my-applications")">Back to My Applications</a> |
             <AuthorizeView Roles="Shelter Employee">
                 <Authorized>
                     <a href="@($"/applications/edit?id={application.Id}")">Edit</a> |
                     <a href="@($"/applications/review")">Back to Review Applications</a>
                 </Authorized>
             </AuthorizeView>
+            <a href="@($"applications/delete?id={application.Id}")">Delete</a> |
+            <a href="@($"/my-applications")">Back to My Applications</a>
+            
         </div>
     }
 </div>

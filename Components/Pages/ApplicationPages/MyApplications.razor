@@ -13,7 +13,6 @@
 
 <h3>My Applications</h3>
 
-
 @if (myApplications.Count > 0)
 {
     <QuickGrid Class="table" Items="myApplications.AsQueryable()">
@@ -33,6 +32,7 @@
 
         <TemplateColumn Context="application">
             <a href="@($"applications/details?id={application.Id}")">Details</a>
+            <a href="@($"applications/delete?id={application.Id}")">Delete</a> |
         </TemplateColumn>
 
     </QuickGrid>
@@ -41,7 +41,7 @@
 }
 else
 {
-    <p>No applications found for this user.</p>
+    <p>You do not have any applications.</p>
 }
 
 @code {
