@@ -4,6 +4,7 @@ using FinalProjectGroup6.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProjectGroup6.Migrations
 {
     [DbContext(typeof(FinalProjectGroup6Context))]
-    partial class FinalProjectGroup6ContextModelSnapshot : ModelSnapshot
+    [Migration("20241216170234_mssql.local_migration_537")]
+    partial class mssqllocal_migration_537
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,13 +108,13 @@ namespace FinalProjectGroup6.Migrations
                     b.Property<bool>("CanProvideCare")
                         .HasColumnType("bit");
 
-                    b.Property<int>("CustomerID")
+                    b.Property<string>("CustomerID")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DogID")
+                    b.Property<string>("DogID")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Experience")
                         .IsRequired()
@@ -187,7 +190,6 @@ namespace FinalProjectGroup6.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Size")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")

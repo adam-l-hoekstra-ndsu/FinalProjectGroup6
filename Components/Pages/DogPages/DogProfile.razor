@@ -46,8 +46,16 @@
                         <td>@dog.Color</td>
                     </tr>
                     <tr>
+                        <th>Size</th>
+                        <td>@dog.Size</td>
+                    </tr>
+                    <tr>
                         <th>Avalibility</th>
                         <td>@getDogStatus(dog)</td>
+                    </tr>
+                    <tr>
+                        <th>Shelter</th>
+                        <td><a href="@($"/animalshelters/profile?id={shelter.Id}")">@shelter.Name</a> </td>
                     </tr>
                 </table>
                 <div>
@@ -69,8 +77,9 @@
                 </div>
             </div>
         <div>
-            <AuthorizeView Roles="Administrator, ShelterEmployee">
-                <a href="@($"/dogs/edit?id={dog.Id}")">Edit</a> |
+            <AuthorizeView Roles="Administrator, Shelter Employee">
+                <a href="@($"/dogs/edit?id={dog.Id}")">Edit</a>
+                <a href="@($"/dogs/delete?id={dog.Id}")">Delete</a>
             </AuthorizeView> 
         </div>
     }
@@ -78,20 +87,14 @@
 
 @code {
     private Dog? dog;
-    private AnimalShelter? shelter;
+    private AnimalShelter shelter;
     private Address? shelterAddress;
     private FinalProjectGroup6Context context = default!;
-    private List<AnimalShelter>? shelters;
-    private List<Address>? addresses;
 
 
     protected override void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
-        shelters = context.AnimalShelter.ToList();
-        addresses = context.Address.ToList();
-        SetShelter();
-        SetShelterAddress();
     }
 
     [SupplyParameterFromQuery]
@@ -101,6 +104,7 @@
     {
         using var context = DbFactory.CreateDbContext();
         dog = await context.Dog.FirstOrDefaultAsync(m => m.Id == Id);
+        shelter = await context.AnimalShelter.FirstOrDefaultAsync(d => d.Id == dog.ShelterId);
 
         if (dog is null)
         {
@@ -129,25 +133,6 @@
         }
     }
 
-    private void SetShelter()
-    {
-        if (dog is not null)
-        {
-            shelter = (from x in context.AnimalShelter
-                       where x.Id == dog.ShelterId
-                       select x).First();
-        }
-    }
-
-    private void SetShelterAddress()
-    {
-        if(shelter is not null) {
-            shelterAddress = (from x in context.Address
-                              where x.Id == shelter.AddressId
-                              select x).First();
-        }
-    }
-
     private string getReadableAddress()
     {
         if (shelterAddress is not null)
@@ -156,21 +141,4 @@
         }
         return "Loading";
     }
-
-    /*Problems
-    <p>
-        <strong>Shelter: </strong> @shelter.Name
-        @getReadableAddress()
-    </p>
-    <p><strong>Avaliablility: </strong> @getDogStatus(dog)</p> 
-    */
-
-   /* Pre Table Formating
-                     <h1>@dog.Name</h1>
-                     <p><strong>Age: </strong> @dog.Age years</p>
-                     <p><strong>Gender:</strong> @dog.Gender</p>
-                     <p><strong>Breed: </strong>@dog.Breed</p>
-                     <p><strong>Spayed / Neutered?:</strong> @yesNoNeuteredSpayed(dog)</p>
-                     <p><strong>Color: </strong> @dog.Color</p>
-    */
 }

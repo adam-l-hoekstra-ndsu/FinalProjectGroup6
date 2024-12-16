@@ -54,6 +54,11 @@
     <!-- Filter by Maximum Age -->
     <label for="maxAgeFilter">Max Age:</label>
     <input type="number" id="maxAgeFilter" value="@maxAgeFilter" @oninput="e => OnFilterChanged(e, nameof(maxAgeFilter))" placeholder="Max age..." step="1" min="0" />
+    <div>
+        <AuthorizeView Roles="Administrator, Shelter Employee">
+            <a href="@("/dogs/create")" class="btn btn-primary">Create New Dog Profile</a>
+        </AuthorizeView>
+    </div>
 </div>
 
 <!-- Display filtered dogs -->

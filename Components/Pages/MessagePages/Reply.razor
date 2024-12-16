@@ -1,4 +1,4 @@
-﻿@page "/messages/create"
+﻿@page "/messages/reply"
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
@@ -9,31 +9,16 @@
 
 <PageTitle>Create</PageTitle>
 
-<h1>Create</h1>
+<h1>Reply</h1>
 
-<h2>Message</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <EditForm method="post" Model="Message" OnValidSubmit="AddMessage" FormName="create" Enhance>
             <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>      
-            <div>
-                <label for="userSentToSelect">To:</label>
-                <InputSelect id="userSentToSelect" @bind-Value="Message.UserSentTo">
-                    @foreach (var user in users)
-                    {
-                        <option value="@user.Id">@user.FirstName @user.LastName</option>
-                    }
-                </InputSelect>
-            </div>     
+            <ValidationSummary class="text-danger" role="alert"/>              
             <div class="mb-3">
-                <label for="subject" class="form-label">Subject:</label> 
-                <InputText id="subject" @bind-Value="Message.Subject" class="form-control" /> 
-                <ValidationMessage For="() => Message.Subject" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="body" class="form-label">Body:</label> 
+                <label for="body" class="form-label">Reply</label> 
                 <InputTextArea id="body" @bind-Value="Message.Body" class="form-control" /> 
                 <ValidationMessage For="() => Message.Body" class="text-danger" /> 
             </div>        
@@ -51,14 +36,19 @@
     private List<User>? users;
     private int userId = -1;
 
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
     [SupplyParameterFromForm]
     private Message Message { get; set; } = new();
+    private Message? MessageToReply { get; set; }
 
     protected override async void OnInitialized()
     {
         base.OnInitialized();
         using var context = DbFactory.CreateDbContext();
         users = context.User.ToList();
+        MessageToReply ??= await context.Message.FirstOrDefaultAsync(m => m.Id == Id);
 
         // Get the Authentication State
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -86,6 +76,8 @@
     {
         Message.Timestamp = DateTime.Now;
         Message.UserSentFrom = userId;
+        Message.UserSentTo = MessageToReply.UserSentFrom;
+        Message.Subject = $"Re: {MessageToReply.Subject}";
         using var context = DbFactory.CreateDbContext();
         context.Message.Add(Message);
         await context.SaveChangesAsync();

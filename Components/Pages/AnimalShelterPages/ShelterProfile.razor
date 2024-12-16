@@ -27,15 +27,23 @@
                     </tr>
                     <tr>
                         <th>Address</th>
-                        <td>@address.StreetAddress</td>
+                        <td>@address.StreetAddress, @address.City, @address.State, @address.ZipCode</td>
                     </tr>
                     <tr>
                         <th>Opens</th>
-                        <td>@formatHour(animalshelter.OpeningHour)</td>
+                        <td>@FormatHour(animalshelter.OpeningHour)</td>
                     </tr>
                     <tr>
                         <th>Closes</th>
-                        <td>@formatHour(animalshelter.ClosingHour)</td>
+                        <td>@FormatHour(animalshelter.ClosingHour)</td>
+                    </tr>
+                    <tr>
+                        <th>Phone Number</th>
+                        <td>@FormatPhoneNumber()</td>
+                    </tr>
+                    <tr>
+                        <th>Email Address</th>
+                        <td>@animalshelter.EmailAddress</td>
                     </tr>
                 </table>
                 <div>
@@ -44,13 +52,14 @@
                     <div class="text-center">
                         <a href="@("/animalshelters/search")" class="btn btn-primary">Back to Search</a>
                         <a>     </a>
-                        <a href="@("/error")" class="btn btn-primary">Contact</a>
+                    <a href="@("/messages")" class="btn btn-primary">Contact</a>
                     </div>
                 </div>
             </div>
         <div>
             <AuthorizeView Roles="Administrator, ShelterEmployee">
                 <a href="@($"/animalshelters/edit?id={animalshelter.Id}")">Edit</a>
+                <a href="@($"/animalshelters/delete?id={animalshelter.Id}")">Delete</a>
             </AuthorizeView> 
         </div>
     }
@@ -84,11 +93,22 @@
         address = context.Address.FirstOrDefault(a => a.Id == animalshelter.Id);
     }
 
-    private string formatHour(int hour)
+    private string FormatHour(int hour)
     {
         if (hour - 12 > 0) return $"{hour - 12} PM";
         if (hour - 12 == 0) return $"{hour} PM";
         return $"{hour} AM";
     }
 
+    private string FormatPhoneNumber()
+    {
+        try {
+            var pn = animalshelter.PhoneNumber.ToCharArray();
+            return $"{pn[0]}{pn[1]}{pn[2]}-{pn[3]}{pn[4]}{pn[5]}-{pn[6]}{pn[7]}{pn[8]}{pn[9]}";
+        }
+        catch (Exception e)
+        {
+            return "Invalid Phone Number";
+        }
+    }
 }

@@ -1,4 +1,5 @@
 ﻿@page "/dogs/edit"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -28,9 +29,11 @@ else
                     <ValidationMessage For="() => Dog.Picture" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="status" class="form-label">Status:</label>
-                    <InputNumber id="status" @bind-Value="Dog.Status" class="form-control" />
-                    <ValidationMessage For="() => Dog.Status" class="text-danger" />
+                    <InputRadioGroup @bind-Value="Dog.Status" class="form-control">
+                        <InputRadio Value="0" /> Avaliable
+                        <InputRadio Value="1" /> Pending
+                        <InputRadio Value="2" /> Adopted
+                    </InputRadioGroup>
                 </div>
                 <div class="mb-3">
                     <label for="name" class="form-label">Name:</label>
@@ -48,6 +51,14 @@ else
                     <InputText id="breed" @bind-Value="Dog.Breed" class="form-control" />
                     <ValidationMessage For="() => Dog.Breed" class="text-danger" />
                 </div>
+                <div>
+                    <label for="sizeSelect">Size:</label>
+                    <InputSelect id="sizeSelect" @bind-Value="Dog.Size">
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                    </InputSelect>
+                </div>
                 <div class="mb-3">
                     <label for="age" class="form-label">Age:</label>
                     <InputNumber id="age" @bind-Value="Dog.Age" class="form-control" />
@@ -63,15 +74,14 @@ else
                     <InputCheckbox id="isneuteredsprayed" @bind-Value="Dog.IsNeuteredSpayed" class="form-check-input" />
                     <ValidationMessage For="() => Dog.IsNeuteredSpayed" class="text-danger" />
                 </div>
-                <div class="mb-3">
-                    <label for="shelterid" class="form-label">ShelterId:</label>
-                    <InputNumber id="shelterid" @bind-Value="Dog.ShelterId" class="form-control" />
-                    <ValidationMessage For="() => Dog.ShelterId" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="isactive" class="form-label">IsActive:</label>
-                    <InputCheckbox id="isactive" @bind-Value="Dog.IsActive" class="form-check-input" />
-                    <ValidationMessage For="() => Dog.IsActive" class="text-danger" />
+                <div>
+                        <label for="shelterSelect">Shelter:</label>
+                        <InputSelect id="shelterSelect" @bind-Value="Dog.ShelterId">
+                            @foreach(var shelter in shelters)
+                            {
+                                <option value="@shelter.Id">@shelter.Name</option>
+                            }
+                        </InputSelect>
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
@@ -80,10 +90,12 @@ else
 }
 
 <div>
-    <a href="/dogs">Back to List</a>
+    <a href="/dogs/search">Back to List</a>
 </div>
 
 @code {
+    private List<AnimalShelter>? shelters;
+
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
@@ -94,6 +106,7 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         Dog ??= await context.Dog.FirstOrDefaultAsync(m => m.Id == Id);
+        shelters = context.AnimalShelter.ToList();
 
         if (Dog is null)
         {
@@ -124,7 +137,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/dogs");
+        NavigationManager.NavigateTo("/dogs/search");
     }
 
     private bool DogExists(int id)

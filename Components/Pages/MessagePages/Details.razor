@@ -17,10 +17,10 @@
     }
     else {
         <dl class="row">
-            <dt class="col-sm-2">UserSentFrom</dt>
-            <dd class="col-sm-10">@message.UserSentFrom</dd>
-            <dt class="col-sm-2">UserSentTo</dt>
-            <dd class="col-sm-10">@message.UserSentTo</dd>
+            <dt class="col-sm-2">Sent From</dt>
+            <dd class="col-sm-10">@getUserFullName(message, true)</dd>
+            <dt class="col-sm-2">Sent To</dt>
+            <dd class="col-sm-10">@getUserFullName(message, false)</dd>
             <dt class="col-sm-2">Timestamp</dt>
             <dd class="col-sm-10">@message.Timestamp</dd>
             <dt class="col-sm-2">Subject</dt>
@@ -29,14 +29,14 @@
             <dd class="col-sm-10">@message.Body</dd>
         </dl>
         <div>
-            <a href="@($"/messages/edit?id={message.Id}")">Edit</a> |
-            <a href="@($"/messages")">Back to List</a>
+            <a href="@($"/messages")" class="btn btn-primary">Back to List</a>
         </div>
     }
 </div>
 
 @code {
     private Message? message;
+    private List<User>? users;
 
     [SupplyParameterFromQuery]
     private int Id { get; set; }
@@ -45,10 +45,27 @@
     {
         using var context = DbFactory.CreateDbContext();
         message = await context.Message.FirstOrDefaultAsync(m => m.Id == Id);
+        users = context.User.ToList();
 
         if (message is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
+    }
+
+    private string getUserFullName(Message message, bool sentFrom)
+    {
+        if (sentFrom)
+        {
+            foreach (var user in users)
+            {
+                if (message.UserSentFrom == user.Id) return $"{user.FirstName} {user.LastName}";
+            }
+        }
+        foreach (var user in users)
+        {
+            if (message.UserSentTo == user.Id) return $"{user.FirstName} {user.LastName}";
+        }
+        return "User Not Found";
     }
 }
