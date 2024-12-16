@@ -17,11 +17,6 @@
             <ValidationSummary class="text-danger" role="alert"/>
 
             <div class="mb-3">
-                <label for="customerid" class="form-label">Customer ID:</label> 
-                <InputNumber id="customerid" @bind-Value="Application.CustomerID" class="form-control" /> 
-                <ValidationMessage For="() => Application.CustomerID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
                 <label for="status" class="form-label">Application Status:</label> 
                 <InputText id="status" @bind-Value="Application.Status" class="form-control" /> 
                 <ValidationMessage For="() => Application.Status" class="text-danger" /> 
@@ -91,12 +86,10 @@
     [SupplyParameterFromForm]
     private Application Application { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddApplication()
     {
         
         using var context = DbFactory.CreateDbContext();
-        Application.DogID = id;
         context.Application.Add(Application);
         await context.SaveChangesAsync();
         NavigationManager.NavigateTo("/my-applications");
