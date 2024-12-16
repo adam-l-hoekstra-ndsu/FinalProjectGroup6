@@ -1,4 +1,6 @@
 ﻿@page "/passwordresettokens/details"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "None")]
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory

@@ -39,12 +39,7 @@
                 <label for="closinghour" class="form-label">ClosingHour:</label> 
                 <InputNumber id="closinghour" @bind-Value="AnimalShelter.ClosingHour" class="form-control" /> 
                 <ValidationMessage For="() => AnimalShelter.ClosingHour" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="isactive" class="form-label">IsActive:</label> 
-                <InputCheckbox id="isactive" @bind-Value="AnimalShelter.IsActive" class="form-check-input" /> 
-                <ValidationMessage For="() => AnimalShelter.IsActive" class="text-danger" /> 
-            </div>        
+            </div>               
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>

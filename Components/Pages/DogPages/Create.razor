@@ -59,12 +59,7 @@
                 <label for="shelterid" class="form-label">ShelterId:</label> 
                 <InputNumber id="shelterid" @bind-Value="Dog.ShelterId" class="form-control" /> 
                 <ValidationMessage For="() => Dog.ShelterId" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="isactive" class="form-label">IsActive:</label> 
-                <InputCheckbox id="isactive" @bind-Value="Dog.IsActive" class="form-check-input" /> 
-                <ValidationMessage For="() => Dog.IsActive" class="text-danger" /> 
-            </div>        
+            </div>                
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>

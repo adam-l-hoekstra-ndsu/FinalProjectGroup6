@@ -125,9 +125,6 @@ namespace FinalProjectGroup6.Migrations
                            b.Property<string>("EmailAddress")
                                .HasColumnType("nvarchar(max)");
 
-                           b.Property<bool>("IsActive")
-                               .HasColumnType("bit");
-
                            b.Property<string>("Name")
                                .HasColumnType("nvarchar(max)");
 
@@ -164,9 +161,6 @@ namespace FinalProjectGroup6.Migrations
 
                            b.Property<string>("Gender")
                                .HasColumnType("nvarchar(max)");
-
-                           b.Property<bool>("IsActive")
-                               .HasColumnType("bit");
 
                            b.Property<bool>("IsNeuteredSpayed")
                                .HasColumnType("bit");
@@ -263,9 +257,6 @@ namespace FinalProjectGroup6.Migrations
                                .IsRequired()
                                .HasMaxLength(60)
                                .HasColumnType("nvarchar(60)");
-
-                           b.Property<bool>("IsActive")
-                               .HasColumnType("bit");
 
                            b.Property<string>("LastName")
                                .IsRequired()

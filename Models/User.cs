@@ -40,8 +40,5 @@ namespace FinalProjectGroup6.Models
         public string? PhoneNumber { get; set; }
         
         public int? ShelterId { get; set; }
-
-        [Required]
-        public Boolean IsActive { get; set; }
     }
 }

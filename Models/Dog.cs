@@ -15,6 +15,5 @@ namespace FinalProjectGroup6.Models
         public string? Color { get; set; }
         public bool IsNeuteredSpayed { get; set; }
         public int ShelterId { get; set; }
-        public bool IsActive { get; set; }
     }
 }

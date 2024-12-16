@@ -164,7 +164,6 @@
             // Set data that does not concern the customer role to default values
             NewUserAddressModel.User.Role = "Customer";
             NewUserAddressModel.User.ShelterId = null;
-            NewUserAddressModel.User.IsActive = true;
 
             // Add Address to the database first
             context.Address.Add(NewUserAddressModel.Address);

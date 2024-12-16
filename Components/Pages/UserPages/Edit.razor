@@ -1,6 +1,7 @@
-﻿@page "/users/edit"
-@using Microsoft.EntityFrameworkCore
+﻿@using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "None")]
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -71,11 +72,6 @@ else
                     <label for="shelterid" class="form-label">ShelterId:</label>
                     <InputNumber id="shelterid" @bind-Value="User.ShelterId" class="form-control" />
                     <ValidationMessage For="() => User.ShelterId" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="isactive" class="form-label">IsActive:</label>
-                    <InputCheckbox id="isactive" @bind-Value="User.IsActive" class="form-check-input" aria-required="true"/>
-                    <ValidationMessage For="() => User.IsActive" class="text-danger" />
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </EditForm>
