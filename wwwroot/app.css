@@ -2,8 +2,21 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 a, .btn-link {
     color: #006bb7;
+}
+
+table {
+    width: 50%;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
 
 .btn-primary {
@@ -48,4 +61,101 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+.username-container {
+    margin-left: 1rem; /* Pushes the username to the far right */
+    font-weight: bold;
+    gap: 1rem;
+    color: #343a40; /* Bootstrap text-secondary color */
+    padding: 0.5rem;
+    white-space: nowrap; /* Prevents the username from wrapping to the next line */
+}
+
+/* Styling for Search Dog and Search Shelter */
+
+.shelterdog-box {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: yellow;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom right, #fce5cdff, #f6b26bff);
+}
+
+    .shelterdog-box img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px; 
+        margin-right: 1rem; 
+    }
+
+
+.shelterdog-info {
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+}
+
+@media (max-width: 600px) {
+    .shelterdog-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .shelterdog-box img {
+            margin: 0 auto 1rem;
+        }
+
+    .shelterdog-info {
+        text-align: center;
+    }
+}
+
+/* Dog Profile */
+.shelterdogprofile-box {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .shelterdogprofile-box image {
+        width: 600px;
+        height: 600px;
+        object-fit: cover;
+        border-radius: 30px;
+        margin-right: 1rem;
+    }
+
+
+.shelterdogprofile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .shelterdogprofile-box {
+        flex-direction: column;
+        text-align: center;
+    }
+
+        .shelterdogprofile-box img {
+            margin: 0 auto 1rem;
+        }
+
+    .shelterdogprofile-info {
+        text-align: center;
+    }
 }

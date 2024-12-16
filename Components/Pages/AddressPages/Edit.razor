@@ -1,0 +1,104 @@
+﻿@page "/addresses/edit"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>Address</h2>
+<hr />
+@if (Address is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Address" OnValidSubmit="UpdateAddress" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="Address.Id" value="@Address.Id" />
+                <div class="mb-3">
+                    <label for="streetaddress" class="form-label">StreetAddress:</label>
+                    <InputText id="streetaddress" @bind-Value="Address.StreetAddress" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Address.StreetAddress" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="form-label">City:</label>
+                    <InputText id="city" @bind-Value="Address.City" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Address.City" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="form-label">State:</label>
+                    <InputText id="state" @bind-Value="Address.State" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Address.State" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="zipcode" class="form-label">ZipCode:</label>
+                    <InputNumber id="zipcode" @bind-Value="Address.ZipCode" class="form-control" aria-required="true"/>
+                    <ValidationMessage For="() => Address.ZipCode" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/addresses">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private Address? Address { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        Address ??= await context.Address.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Address is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateAddress()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(Address!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!AddressExists(Address!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/addresses");
+    }
+
+    private bool AddressExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.Address.Any(e => e.Id == id);
+    }
+}

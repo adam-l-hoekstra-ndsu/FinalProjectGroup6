@@ -1,0 +1,54 @@
+﻿@page "/passwordresettokens/create"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>PasswordResetToken</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="PasswordResetToken" OnValidSubmit="AddPasswordResetToken" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="userid" class="form-label">UserId:</label> 
+                <InputNumber id="userid" @bind-Value="PasswordResetToken.UserId" class="form-control" /> 
+                <ValidationMessage For="() => PasswordResetToken.UserId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="token" class="form-label">Token:</label> 
+                <InputText id="token" @bind-Value="PasswordResetToken.Token" class="form-control" /> 
+                <ValidationMessage For="() => PasswordResetToken.Token" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="expiry" class="form-label">Expiry:</label> 
+                <InputDate id="expiry" @bind-Value="PasswordResetToken.Expiry" class="form-control" /> 
+                <ValidationMessage For="() => PasswordResetToken.Expiry" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/passwordresettokens">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private PasswordResetToken PasswordResetToken { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddPasswordResetToken()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.PasswordResetToken.Add(PasswordResetToken);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/passwordresettokens");
+    }
+}

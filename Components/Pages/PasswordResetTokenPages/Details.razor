@@ -1,0 +1,50 @@
+﻿@page "/passwordresettokens/details"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>PasswordResetToken</h2>
+    <hr />
+    @if (passwordresettoken is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">UserId</dt>
+            <dd class="col-sm-10">@passwordresettoken.UserId</dd>
+            <dt class="col-sm-2">Token</dt>
+            <dd class="col-sm-10">@passwordresettoken.Token</dd>
+            <dt class="col-sm-2">Expiry</dt>
+            <dd class="col-sm-10">@passwordresettoken.Expiry</dd>
+        </dl>
+        <div>
+            <a href="@($"/passwordresettokens/edit?id={passwordresettoken.Id}")">Edit</a> |
+            <a href="@($"/passwordresettokens")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    private PasswordResetToken? passwordresettoken;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        passwordresettoken = await context.PasswordResetToken.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (passwordresettoken is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

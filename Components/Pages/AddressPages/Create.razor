@@ -1,0 +1,59 @@
+﻿@page "/addresses/create"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Address</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Address" OnValidSubmit="AddAddress" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="streetaddress" class="form-label">StreetAddress:</label> 
+                <InputText id="streetaddress" @bind-Value="Address.StreetAddress" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Address.StreetAddress" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="city" class="form-label">City:</label> 
+                <InputText id="city" @bind-Value="Address.City" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Address.City" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="state" class="form-label">State:</label> 
+                <InputText id="state" @bind-Value="Address.State" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Address.State" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="zipcode" class="form-label">ZipCode:</label> 
+                <InputNumber id="zipcode" @bind-Value="Address.ZipCode" class="form-control" aria-required="true"/> 
+                <ValidationMessage For="() => Address.ZipCode" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/addresses">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private Address Address { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddAddress()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Address.Add(Address);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/addresses");
+    }
+}

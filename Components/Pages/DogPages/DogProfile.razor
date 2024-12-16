@@ -1,0 +1,176 @@
+﻿@page "/dogs/profile"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Dog Profile</PageTitle>
+
+<h1>Dog Profile</h1>
+
+<div>
+    <hr />
+    @if (dog is null )//|| shelter is null || shelterAddress is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+            <div class="shelterdogprofile-box">
+            <img src="@dog.Picture" alt="@dog.Name" class="img-fluid" />
+                <div class="shelterdogprofile-info">
+                <table class="center">
+                    <tr>
+                        <th>Name</th>
+                        <td>@dog.Name</td>
+                    </tr>
+                    <tr>
+                        <th>Age</th>
+                        <td>@dog.Age Years Old</td>
+                    </tr>
+                    <tr>
+                        <th>Gender</th>
+                        <td>@dog.Gender</td>
+                    </tr>
+                    <tr>
+                        <th>Neutered or Spayed</th>
+                        <td>@yesNoNeuteredSpayed(dog)</td>
+                    </tr>
+                    <tr>
+                        <th>Breed</th>
+                        <td>@dog.Breed</td>
+                    </tr>
+                    <tr>
+                        <th>Color</th>
+                        <td>@dog.Color</td>
+                    </tr>
+                    <tr>
+                        <th>Avalibility</th>
+                        <td>@getDogStatus(dog)</td>
+                    </tr>
+                </table>
+                <div>
+                <p></p>
+                </div>
+                    <div class="text-center">
+                        <a href="@("/dogs/search")" class="btn btn-primary">Back to Search</a>
+                        <a>     </a>
+                        <a href="@("/error")" class="btn btn-primary">Contact Us</a>
+                        <AuthorizeView>
+                            <NotAuthorized>
+                                <a href="/login" class="btn btn-secondary">Login to Adopt</a>
+                            </NotAuthorized>
+                            <Authorized>
+                                <a href="@($"/adopt?id={dog.Id}")" class="btn btn-primary">Adopt</a>
+                            </Authorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+            </div>
+        <div>
+            <AuthorizeView Roles="Administrator, ShelterEmployee">
+                <a href="@($"/dogs/edit?id={dog.Id}")">Edit</a> |
+            </AuthorizeView> 
+        </div>
+    }
+</div>
+
+@code {
+    private Dog? dog;
+    private AnimalShelter? shelter;
+    private Address? shelterAddress;
+    private FinalProjectGroup6Context context = default!;
+    private List<AnimalShelter>? shelters;
+    private List<Address>? addresses;
+
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        shelters = context.AnimalShelter.ToList();
+        addresses = context.Address.ToList();
+        SetShelter();
+        SetShelterAddress();
+    }
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        dog = await context.Dog.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (dog is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private string yesNoNeuteredSpayed(Dog dog)
+    {
+        if (dog.IsNeuteredSpayed) return "Yes";
+        return "No";
+    }
+
+    private string getDogStatus(Dog dog)
+    {
+        switch (dog.Status)
+        {
+            case (0):
+                return "Avaliable";
+            case (1):
+                return "Pending Adoption";
+            case (2):
+                return "Unavaliable";
+            default:
+                return "Avaliable";
+        }
+    }
+
+    private void SetShelter()
+    {
+        if (dog is not null)
+        {
+            shelter = (from x in context.AnimalShelter
+                       where x.Id == dog.ShelterId
+                       select x).First();
+        }
+    }
+
+    private void SetShelterAddress()
+    {
+        if(shelter is not null) {
+            shelterAddress = (from x in context.Address
+                              where x.Id == shelter.AddressId
+                              select x).First();
+        }
+    }
+
+    private string getReadableAddress()
+    {
+        if (shelterAddress is not null)
+        {
+            return $"{shelterAddress.StreetAddress}, {shelterAddress.City}, {shelterAddress.State}, {shelterAddress.ZipCode}";
+        }
+        return "Loading";
+    }
+
+    /*Problems
+    <p>
+        <strong>Shelter: </strong> @shelter.Name
+        @getReadableAddress()
+    </p>
+    <p><strong>Avaliablility: </strong> @getDogStatus(dog)</p> 
+    */
+
+   /* Pre Table Formating
+                     <h1>@dog.Name</h1>
+                     <p><strong>Age: </strong> @dog.Age years</p>
+                     <p><strong>Gender:</strong> @dog.Gender</p>
+                     <p><strong>Breed: </strong>@dog.Breed</p>
+                     <p><strong>Spayed / Neutered?:</strong> @yesNoNeuteredSpayed(dog)</p>
+                     <p><strong>Color: </strong> @dog.Color</p>
+    */
+}

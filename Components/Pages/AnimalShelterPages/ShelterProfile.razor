@@ -1,0 +1,94 @@
+﻿@page "/animalshelters/profile"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Data
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Shelter Profile</PageTitle>
+
+<h1>Shelter Profile</h1>
+
+<div>
+    <hr />
+    @if (animalshelter is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+       <div class="shelterdogprofile-box">
+            <img src="@animalshelter.Picture" alt="@animalshelter.Name" class="img-fluid" />
+                <div class="shelterdogprofile-info">
+                <table class="center">
+                    <tr>
+                        <th>Name</th>
+                        <td>@animalshelter.Name</td>
+                    </tr>
+                    <tr>
+                        <th>Address</th>
+                        <td>@address.StreetAddress</td>
+                    </tr>
+                    <tr>
+                        <th>Opens</th>
+                        <td>@formatHour(animalshelter.OpeningHour)</td>
+                    </tr>
+                    <tr>
+                        <th>Closes</th>
+                        <td>@formatHour(animalshelter.ClosingHour)</td>
+                    </tr>
+                </table>
+                <div>
+                <p></p>
+                </div>
+                    <div class="text-center">
+                        <a href="@("/animalshelters/search")" class="btn btn-primary">Back to Search</a>
+                        <a>     </a>
+                        <a href="@("/error")" class="btn btn-primary">Contact</a>
+                    </div>
+                </div>
+            </div>
+        <div>
+            <AuthorizeView Roles="Administrator, ShelterEmployee">
+                <a href="@($"/animalshelters/edit?id={animalshelter.Id}")">Edit</a>
+            </AuthorizeView> 
+        </div>
+    }
+</div>
+
+@code {
+    private AnimalShelter? animalshelter;
+    private FinalProjectGroup6Context context = default!;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    private Address address;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        animalshelter = await context.AnimalShelter.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (animalshelter is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+
+        base.OnInitialized();
+        address = context.Address.FirstOrDefault(a => a.Id == animalshelter.Id);
+    }
+
+    private string formatHour(int hour)
+    {
+        if (hour - 12 > 0) return $"{hour - 12} PM";
+        if (hour - 12 == 0) return $"{hour} PM";
+        return $"{hour} AM";
+    }
+
+}

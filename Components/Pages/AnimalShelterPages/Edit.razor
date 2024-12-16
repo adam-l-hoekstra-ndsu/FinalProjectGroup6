@@ -1,0 +1,124 @@
+﻿@page "/animalshelters/edit"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h2>AnimalShelter</h2>
+<hr />
+@if (AnimalShelter is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="AnimalShelter" OnValidSubmit="UpdateAnimalShelter" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary role="alert"/>
+                <input type="hidden" name="AnimalShelter.Id" value="@AnimalShelter.Id" />
+                <div class="mb-3">
+                    <label for="picture" class="form-label">Picture:</label>
+                    <InputText id="picture" @bind-Value="AnimalShelter.Picture" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.Picture" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name:</label>
+                    <InputText id="name" @bind-Value="AnimalShelter.Name" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.Name" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="addressid" class="form-label">AddressId:</label>
+                    <InputNumber id="addressid" @bind-Value="AnimalShelter.AddressId" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.AddressId" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="openinghour" class="form-label">OpeningHour:</label>
+                    <InputNumber id="openinghour" @bind-Value="AnimalShelter.OpeningHour" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.OpeningHour" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="closinghour" class="form-label">ClosingHour:</label>
+                    <InputNumber id="closinghour" @bind-Value="AnimalShelter.ClosingHour" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.ClosingHour" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="isactive" class="form-label">IsActive:</label>
+                    <InputCheckbox id="isactive" @bind-Value="AnimalShelter.IsActive" class="form-check-input" />
+                    <ValidationMessage For="() => AnimalShelter.IsActive" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="phoneNumber" class="form-label">Phone Number:</label>
+                    <InputText id="phoneNumber" @bind-Value="AnimalShelter.PhoneNumber" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.PhoneNumber" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="emailAddress" class="form-label">Email Address:</label>
+                    <InputText id="emailAdress" @bind-Value="AnimalShelter.EmailAddress" class="form-control" />
+                    <ValidationMessage For="() => AnimalShelter.EmailAddress" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/animalshelters">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    private AnimalShelter? AnimalShelter { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        AnimalShelter ??= await context.AnimalShelter.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (AnimalShelter is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task UpdateAnimalShelter()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Attach(AnimalShelter!).State = EntityState.Modified;
+
+        try
+        {
+            await context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!AnimalShelterExists(AnimalShelter!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/animalshelters");
+    }
+
+    private bool AnimalShelterExists(int id)
+    {
+        using var context = DbFactory.CreateDbContext();
+        return context.AnimalShelter.Any(e => e.Id == id);
+    }
+}

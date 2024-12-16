@@ -1,0 +1,292 @@
+﻿@page "/registerhigherprivelageuser"
+@attribute [Authorize(Roles = "Administrator")]
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Authorization
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Services
+@using Microsoft.EntityFrameworkCore
+@using System.ComponentModel.DataAnnotations
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@NewUserAddressModel" OnValidSubmit="HandleValidSubmit" FormName="CustomerRegistrationForm">
+    <DataAnnotationsValidator />
+
+    <h3 class="mb-4">Register New User</h3>
+
+    <!-- Username -->
+    <div class="form-group mb-3">
+        <label for="username">Username:</label>
+        <InputText id="username" class="form-control" @bind-Value="NewUserAddressModel.User.UserName" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.UserName)" />
+    </div>
+
+    <!-- Password -->
+    <div class="form-group mb-3">
+        <label for="password">Password:</label>
+        <InputText id="password" class="form-control" @bind-Value="NewUserAddressModel.User.Password" InputType="password" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.Password)" />
+    </div>
+
+    <!-- First Name -->
+    <div class="form-group mb-3">
+        <label for="firstName">First Name:</label>
+        <InputText id="firstName" class="form-control" @bind-Value="NewUserAddressModel.User.FirstName" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.FirstName)" />
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-group mb-3">
+        <label for="lastName">Last Name:</label>
+        <InputText id="lastName" class="form-control" @bind-Value="NewUserAddressModel.User.LastName" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.LastName)" />
+    </div>
+
+    <!-- Email Address -->
+    <div class="form-group mb-3">
+        <label for="email">Email Address:</label>
+        <InputText id="email" class="form-control" @bind-Value="NewUserAddressModel.User.EmailAddress" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.EmailAddress)" />
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="form-group mb-3">
+        <label for="dateOfBirth">Date of Birth:</label>
+        <InputDate id="dateOfBirth" class="form-control" @bind-Value="NewUserAddressModel.User.DateOfBirth" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.DateOfBirth)" />
+    </div>
+
+    <!-- Phone Number -->
+    <div class="form-group mb-3">
+        <label for="phoneNumber">Phone Number:</label>
+        <InputText id="phoneNumber" class="form-control" @bind-Value="NewUserAddressModel.User.PhoneNumber" />
+        <ValidationMessage For="@(() => NewUserAddressModel.User.PhoneNumber)" />
+    </div>
+
+    <!-- User Role -->
+    <div class="form-group mb-3">
+        <label for="userRole">User Role:</label>
+        <InputSelect id="userRole" class="form-control" @bind-Value="NewUserAddressModel.SelectedRole.RoleString">
+            <option value="">-- Select a Role --</option>
+            @foreach (var role in roles)
+            {
+                <option value="@role">@role</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => NewUserAddressModel.SelectedRole.RoleString)" />
+    </div>
+
+    <!-- Shelter Description (Conditional) -->
+    @if (NewUserAddressModel.SelectedRole.RoleString == "ShelterEmployee")
+    {
+        <div class="form-group mb-3">
+            <label for="shelterDescription">Animal Shelter:</label>
+            <InputSelect id="shelterDescription" class="form-control" @bind-Value="NewUserAddressModel.SelectedShelterName.ShelterString">
+                <option value="">-- Select a Shelter --</option>
+                @foreach (var shelterDescription in shelterDescriptions)
+                {
+                    <option value="@shelterDescription">@shelterDescription</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => NewUserAddressModel.SelectedShelterName.ShelterString)" />
+        </div>
+    }
+
+    <!-- Address Section -->
+    <h4 class="mt-4 mb-3">Address</h4>
+
+    <div class="form-group mb-3">
+        <label for="streetAddress">Street Address:</label>
+        <InputText id="streetAddress" class="form-control" @bind-Value="NewUserAddressModel.Address.StreetAddress" />
+        <ValidationMessage For="@(() => NewUserAddressModel.Address.StreetAddress)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="city">City:</label>
+        <InputText id="city" class="form-control" @bind-Value="NewUserAddressModel.Address.City" />
+        <ValidationMessage For="@(() => NewUserAddressModel.Address.City)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="state">State:</label>
+        <InputText id="state" class="form-control" @bind-Value="NewUserAddressModel.Address.State" />
+        <ValidationMessage For="@(() => NewUserAddressModel.Address.State)" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="zipCode">ZIP Code:</label>
+        <InputNumber id="zipCode" class="form-control" @bind-Value="NewUserAddressModel.Address.ZipCode" />
+        <ValidationMessage For="@(() => NewUserAddressModel.Address.ZipCode)" />
+    </div>
+
+    <ValidationSummary class="text-danger mb-3" />
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+
+@if (successMessage != null)
+{
+    <p style="color:green;">@successMessage</p>
+}
+
+@if (errorMessage != null)
+{
+    <p style="color:red;">@errorMessage</p>
+}
+
+@code {
+
+    // Class which combines User and Address models to submit with form
+    public class UserAddressViewModel : IValidatableObject
+    {
+        public class Role
+        {
+            [Required (ErrorMessage = "The User Role is Required.")]
+            public string RoleString { get; set; } = "";
+        }
+
+        public class ShelterDescription
+        {
+            [Required(ErrorMessage = "The Shelter is Required.")]
+            public string ShelterString { get; set; } = "";
+        }
+
+        public User User { get; set; } = new User();
+        public Address Address { get; set; } = new Address();
+
+        public Role SelectedRole { get; set; } = new Role();
+        public ShelterDescription SelectedShelterName { get; set; } = new ShelterDescription();
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var results = new List<ValidationResult>();
+
+            // Validate User
+            var userValidationResults = new List<ValidationResult>();
+            var userContext = new ValidationContext(User);
+            Validator.TryValidateObject(User, userContext, userValidationResults, true);
+            results.AddRange(userValidationResults);
+
+            // Validate Address
+            var addressValidationResults = new List<ValidationResult>();
+            var addressContext = new ValidationContext(Address);
+            Validator.TryValidateObject(Address, addressContext, addressValidationResults, true);
+            results.AddRange(addressValidationResults);
+
+            // Validate Role
+            var roleValidationResults = new List<ValidationResult>();
+            var roleContext = new ValidationContext(SelectedRole);
+            Validator.TryValidateObject(SelectedRole, roleContext, roleValidationResults, true);
+            results.AddRange(roleValidationResults);
+
+            // Conditional validation for Shelter Description
+            if (SelectedRole.RoleString == "ShelterEmployee")
+            {
+                var shelterValidationResults = new List<ValidationResult>();
+                var shelterContext = new ValidationContext(SelectedShelterName);
+                Validator.TryValidateObject(SelectedShelterName, shelterContext, shelterValidationResults, true);
+                results.AddRange(shelterValidationResults);
+            }
+
+            return results;
+        }
+    }
+
+    [SupplyParameterFromForm]
+    private UserAddressViewModel NewUserAddressModel { get; set; } = new();
+
+    private List<string> roles = new List<string> { "ShelterEmployee", "Administrator" };
+    private List<string> shelterDescriptions = new List<string>();
+
+    private string? successMessage;
+    private string? errorMessage;
+
+    // Load shelter descriptions on startup
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadShelterDescriptions();
+    }
+
+    // Get the shelter names and Ids and add them to the shelter description list to display in drop down menu
+    private async Task LoadShelterDescriptions()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        // LINQ query to get the shelters and add their descriptions to list
+        var shelterNamesList = await context.AnimalShelter.ToListAsync();
+        foreach (var shelter in shelterNamesList)
+        {
+            string shelterDescription = $"Id: {shelter.Id} Name: {shelter.Name}";
+            shelterDescriptions.Add(shelterDescription);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        using var context = DbFactory.CreateDbContext();
+
+        try
+        {
+            // Check if username or email is already registered
+            bool error = false;
+            if (context.User.Any(u => u.UserName == NewUserAddressModel.User.UserName))
+            {
+                errorMessage += "Username is already registered.";
+                error = true;
+            }
+            if (context.User.Any(u => u.EmailAddress == NewUserAddressModel.User.EmailAddress))
+            {
+                errorMessage += " Email address is already registered.";
+                error = true;
+            }
+            if (error == true)
+                return;
+
+            // Set role and shelter if the user is a shelter employee
+            if (NewUserAddressModel.SelectedRole.RoleString.Equals("ShelterEmployee"))
+            {
+                NewUserAddressModel.User.Role = "ShelterEmployee";
+
+                int idStartIndex = NewUserAddressModel.SelectedShelterName.ShelterString.IndexOf("Id:") + 4;
+                int idEndIndex = NewUserAddressModel.SelectedShelterName.ShelterString.IndexOf(" Name");
+                string id = NewUserAddressModel.SelectedShelterName.ShelterString.Substring(idStartIndex, idEndIndex - idStartIndex);
+                NewUserAddressModel.User.ShelterId = Convert.ToInt32(id);
+            }
+            else
+            {
+                NewUserAddressModel.User.Role = "Administrator";
+                NewUserAddressModel.User.ShelterId = null;
+            }
+           
+            NewUserAddressModel.User.IsActive = true;
+
+            // Add Address to the database first
+            context.Address.Add(NewUserAddressModel.Address);
+            await context.SaveChangesAsync();
+
+            // Now that the address is saved, set the AddressId in the User object
+            NewUserAddressModel.User.AddressId = NewUserAddressModel.Address.Id;
+
+            // Encrypt Password
+            NewUserAddressModel.User.Password = PasswordService.HashPassword(NewUserAddressModel.User.Password);
+
+            // Add User to the database
+            context.User.Add(NewUserAddressModel.User);
+            await context.SaveChangesAsync();
+
+            successMessage = "User registered successfully!";
+            errorMessage = null;
+
+            // Reset input model
+            NewUserAddressModel = new();
+
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred while registering the user.";
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

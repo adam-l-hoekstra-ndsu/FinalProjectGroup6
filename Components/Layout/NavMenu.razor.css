@@ -24,6 +24,12 @@
     font-size: 1.1rem;
 }
 
+.table {
+    max-width: 100%; /* Prevent grid from exceeding the container width */
+    overflow-x: auto; /* Enable horizontal scrolling if needed */
+    border-collapse: collapse; /* Ensure compact table display */
+}
+
 .bi {
     display: inline-block;
     position: relative;

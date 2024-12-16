@@ -1,0 +1,86 @@
+﻿@page "/applications/details"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveServer
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h2>Application</h2>
+    <hr />
+    @if (application is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">DogID</dt>
+            <dd class="col-sm-10">@application.DogID</dd>
+            <dt class="col-sm-2">CustomerID</dt>
+            <dd class="col-sm-10">@application.CustomerID</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@application.Status</dd>
+            <dt class="col-sm-2">SubmitDate</dt>
+            <dd class="col-sm-10">@application.SubmitDate</dd>
+            <dt class="col-sm-2">ReviewDate</dt>
+            <dd class="col-sm-10">@application.ReviewDate</dd>
+            <dt class="col-sm-2">WhyHaveDog</dt>
+            <dd class="col-sm-10">@application.WhyHaveDog</dd>
+            <dt class="col-sm-2">Experience</dt>
+            <dd class="col-sm-10">@application.Experience</dd>
+            <dt class="col-sm-2">NumPetsOwned</dt>
+            <dd class="col-sm-10">@application.NumPetsOwned</dd>
+            <dt class="col-sm-2">Activities</dt>
+            <dd class="col-sm-10">@application.Activities</dd>
+            <dt class="col-sm-2">Inside</dt>
+            <dd class="col-sm-10">@application.Inside</dd>
+            <dt class="col-sm-2">HrsLeftAlone</dt>
+            <dd class="col-sm-10">@application.HrsLeftAlone</dd>
+            <dt class="col-sm-2">CanProvideCare</dt>
+            <dd class="col-sm-10">@application.CanProvideCare</dd>
+            <dt class="col-sm-2">RejectReason</dt>
+            <dd class="col-sm-10">@application.RejectReason</dd>
+        </dl>
+        <div>
+            
+            <AuthorizeView Roles ="Administrator">
+                <Authorized>
+                    <a href="@($"/applications/edit?id={application.Id}")">Edit</a> |
+                    <a href="@($"/applications")">Back to All Applications</a>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="ShelterEmployee">
+                <Authorized>
+                    <a href="@($"/applications/edit?id={application.Id}")">Edit</a> |
+                    <a href="@($"/applications/review")">Back to Review Applications</a>
+                </Authorized>
+            </AuthorizeView>
+            <a href="@($"applications/delete?id={application.Id}")">Delete</a> |
+            <a href="@($"/my-applications")">Back to My Applications</a>
+            
+        </div>
+    }
+</div>
+
+@code {
+    private Application? application;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        application = await context.Application.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (application is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}

@@ -1,0 +1,100 @@
+﻿@page "/login"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@using FinalProjectGroup6.Services
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject NavigationManager NavigationManager
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+
+<h3>Login</h3>
+
+<!-- EditForm component to handle user login -->
+<EditForm Model="@NewLoginModel" OnValidSubmit="Authenticate" FormName="Login Form">
+    <!-- Validation components to display errors if the form input is invalid -->
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Username input field -->
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="NewLoginModel.Username" />
+    </div>
+
+    <!-- Password input field -->
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" class="form-control" type="password" @bind-Value="NewLoginModel.Password" />
+    </div>
+
+    <!-- Submit button to trigger login -->
+    <button type="submit" class="btn btn-primary">Login</button>
+
+    <!-- Forgot password link -->
+    <div>
+        <a href="/forgot-password" class="btn btn-link">Forgot Password?</a>
+    </div>
+</EditForm>
+
+<!-- Display error message if login fails -->
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="text-danger">@errorMessage</div>
+}
+
+@code {
+    // HttpContext is injected to access user authentication and session data
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    // Bind the LoginModel from the form input fields
+    [SupplyParameterFromForm]
+    public LoginModel NewLoginModel { get; set; } = new();
+
+    // Variable to hold error message
+    private string errorMessage;
+
+    // Authenticate method is triggered on successful form submission
+    private async Task Authenticate()
+    {
+        // Create a context instance to interact with the database
+        using var context = DbFactory.CreateDbContext();
+
+        // Check if the user exists in the database by matching the entered username
+        var userAccount = context.User.Where(x => x.UserName == NewLoginModel.Username).FirstOrDefault();
+
+        // If no user found or password doesn't match, set error message and return
+        if (userAccount is null || !PasswordService.CheckPassword(userAccount.Password, NewLoginModel.Password))
+        {
+            errorMessage = "Invalid UserName or Password."; // Show error message
+            return;
+        }
+
+        // Create a list of claims (user information) for authentication
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, NewLoginModel.Username), 
+            new Claim(ClaimTypes.Role, userAccount.Role),
+            new Claim(ClaimTypes.NameIdentifier, userAccount.Id.ToString()),
+            new Claim("ShelterID", userAccount.ShelterId.ToString())
+        };
+
+        // Create a ClaimsIdentity and ClaimsPrincipal for user authentication
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        // Sign in the user using cookies 
+        await HttpContext.SignInAsync(principal);
+
+        // After successful login, redirect the user to the home page
+        NavigationManager.NavigateTo("/");
+    }
+
+    // Define the structure of the login model to bind with the form inputs
+    public class LoginModel
+    {
+        public string? Username { get; set; } // Username field
+        public string? Password { get; set; } // Password field
+    }
+}

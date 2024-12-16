@@ -1,0 +1,69 @@
+﻿@page "/animalshelters/create"
+@using Microsoft.EntityFrameworkCore
+@using FinalProjectGroup6.Models
+@inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>AnimalShelter</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="AnimalShelter" OnValidSubmit="AddAnimalShelter" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert"/>
+            <div class="mb-3">
+                <label for="picture" class="form-label">Picture:</label> 
+                <InputText id="picture" @bind-Value="AnimalShelter.Picture" class="form-control" /> 
+                <ValidationMessage For="() => AnimalShelter.Picture" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="AnimalShelter.Name" class="form-control" /> 
+                <ValidationMessage For="() => AnimalShelter.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="addressid" class="form-label">AddressId:</label> 
+                <InputNumber id="addressid" @bind-Value="AnimalShelter.AddressId" class="form-control" /> 
+                <ValidationMessage For="() => AnimalShelter.AddressId" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="openinghour" class="form-label">OpeningHour:</label> 
+                <InputNumber id="openinghour" @bind-Value="AnimalShelter.OpeningHour" class="form-control" /> 
+                <ValidationMessage For="() => AnimalShelter.OpeningHour" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="closinghour" class="form-label">ClosingHour:</label> 
+                <InputNumber id="closinghour" @bind-Value="AnimalShelter.ClosingHour" class="form-control" /> 
+                <ValidationMessage For="() => AnimalShelter.ClosingHour" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="isactive" class="form-label">IsActive:</label> 
+                <InputCheckbox id="isactive" @bind-Value="AnimalShelter.IsActive" class="form-check-input" /> 
+                <ValidationMessage For="() => AnimalShelter.IsActive" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/animalshelters">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private AnimalShelter AnimalShelter { get; set; } = new();
+
+    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    private async Task AddAnimalShelter()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.AnimalShelter.Add(AnimalShelter);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/animalshelters");
+    }
+}
