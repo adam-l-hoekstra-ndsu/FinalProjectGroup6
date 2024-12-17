@@ -114,17 +114,6 @@
     // String to store user role
     private string userRole;
 
-    // On initialization, load data from the database
-    protected override void OnInitialized()
-    {
-        context = DbFactory.CreateDbContext();
-        dogs = context.Dog.ToList();
-        shelters = context.AnimalShelter.ToList();
-        addresses = context.Address.ToList();
-        // Initially show all dogs
-        filteredDogs = dogs; 
-    }
-
     protected override async Task OnInitializedAsync()
     {
         // Get the Authentication State
@@ -149,6 +138,13 @@
             // Default role for unauthenticated users
             userRole = "Guest"; 
         }
+
+        // Set initial values
+        context = DbFactory.CreateDbContext();
+        dogs = context.Dog.ToList();
+        shelters = context.AnimalShelter.ToList();
+        addresses = context.Address.ToList();
+        FilterDogs();
     }
 
     // Called when any filter is changed. Updates the corresponding filter and triggers the filtering process
