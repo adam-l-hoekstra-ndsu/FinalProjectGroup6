@@ -38,10 +38,9 @@ namespace FinalProjectGroup6.Models
 
         [Phone(ErrorMessage = "Phone number is invalid.")]
         public string? PhoneNumber { get; set; }
+
+        public bool IsActive { get; set; }
         
         public int? ShelterId { get; set; }
-
-        [Required]
-        public Boolean IsActive { get; set; }
     }
 }

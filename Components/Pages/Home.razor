@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
 
 <PageTitle>Home</PageTitle>
 
@@ -12,9 +13,6 @@
      <a href="@("/dogs/search")" class="btn btn-primary">Search Dogs</a>
      <a>     </a>
     <a href="@("/animalshelters/search")" class="btn btn-primary">Search Shelters</a>
-    <a>     </a>
-    <a href="@("/message-us")" class="btn btn-primary">Message Us</a>
-    <a>     </a>
 </div>
 <br />
 <br />
@@ -88,7 +86,14 @@
 <div class="container">
     <h2>Contact Us</h2>
     <p>
-        <a href="@("/message-us")" class="btn btn-primary">Send a Message</a>
+        <AuthorizeView>
+            <Authorized>
+                <a href="@("/messages")" class="btn btn-primary">Send a Message</a>
+            </Authorized>
+            <NotAuthorized>
+                <a href="@("/login")" class="btn btn-secondary">Login to Send a Message</a>
+            </NotAuthorized>
+        </AuthorizeView>
         <br /><br />
         Or
         <br /><br />

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProjectGroup6.Migrations
 {
     [DbContext(typeof(FinalProjectGroup6Context))]
-    [Migration("20241216232206_mssql.local_migration_568")]
-    partial class mssqllocal_migration_568
+    [Migration("20241217045609_mssql.local_migration_697")]
+    partial class mssqllocal_migration_697
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,13 +108,11 @@ namespace FinalProjectGroup6.Migrations
                     b.Property<bool>("CanProvideCare")
                         .HasColumnType("bit");
 
-                    b.Property<string>("CustomerID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CustomerID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("DogID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DogID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Experience")
                         .IsRequired()
@@ -172,9 +170,6 @@ namespace FinalProjectGroup6.Migrations
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsNeuteredSpayed")
                         .HasColumnType("bit");

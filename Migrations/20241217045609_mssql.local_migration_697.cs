@@ -5,7 +5,7 @@
 namespace FinalProjectGroup6.Migrations
 {
     /// <inheritdoc />
-    public partial class mssqllocal_migration_171 : Migration
+    public partial class mssqllocal_migration_697 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

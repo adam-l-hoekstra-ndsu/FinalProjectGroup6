@@ -1,4 +1,6 @@
 ﻿@page "/addresses"
+@attribute [Authorize(Roles = "Administrator")]
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models
@@ -10,8 +12,9 @@
 
 <h1>Index</h1>
 
+<h2>Create</h2>
 <p>
-    <a href="addresses/create">Create New</a>
+    <a href="/addresses/create">Create New</a>
 </p>
 
 <QuickGrid Class="table" Items="context.Address">
@@ -22,7 +25,6 @@
     <PropertyColumn Property="address => address.ZipCode" />
 
     <TemplateColumn Context="address">
-        <a href="@($"addresses/edit?id={address.Id}")">Edit</a> |
         <a href="@($"addresses/details?id={address.Id}")">Details</a> |
         <a href="@($"addresses/delete?id={address.Id}")">Delete</a>
     </TemplateColumn>
@@ -35,6 +37,8 @@
     {
         context = DbFactory.CreateDbContext();
     }
+
+    // Hello Matt
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

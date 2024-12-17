@@ -35,7 +35,6 @@ namespace FinalProjectGroup6.Data
                     ClosingHour = 18,
                     PhoneNumber = "6122223333",
                     EmailAddress = "email@gmail.com",
-                    IsActive = true,
                 },
                 new AnimalShelter
                 {
@@ -46,7 +45,6 @@ namespace FinalProjectGroup6.Data
                     ClosingHour = 17,
                     PhoneNumber = "6124445555",
                     EmailAddress = "fakeemail@gmail.com",
-                    IsActive = true,
                 },
                 new AnimalShelter
                 {
@@ -57,7 +55,6 @@ namespace FinalProjectGroup6.Data
                     ClosingHour = 19,
                     PhoneNumber = "6125556666",
                     EmailAddress = "realemail@gmail.com",
-                    IsActive = true,
                 });
 
             context.SaveChanges();

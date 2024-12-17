@@ -1,4 +1,6 @@
 ﻿@page "/addresses/edit"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "None")]
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models

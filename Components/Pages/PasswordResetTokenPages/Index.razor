@@ -1,4 +1,6 @@
 ﻿@page "/passwordresettokens"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "None")]
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models

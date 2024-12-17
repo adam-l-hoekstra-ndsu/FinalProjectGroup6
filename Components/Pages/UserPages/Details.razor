@@ -1,6 +1,8 @@
 ﻿@page "/users/details"
+@attribute [Authorize(Roles = "Administrator")]
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
+@using Microsoft.AspNetCore.Authorization
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
 
@@ -30,13 +32,13 @@
             <dt class="col-sm-2">AddressId</dt>
             <dd class="col-sm-10">@user.AddressId</dd>
             <dt class="col-sm-2">StreetAddress</dt>
-            <dt class="col-sm-10">@address.StreetAddress</dt>
+            <dd class="col-sm-10">@address.StreetAddress</dd>
             <dt class="col-sm-2">City</dt>
-            <dt class="col-sm-10">@address.City</dt>
+            <dd class="col-sm-10">@address.City</dd>
             <dt class="col-sm-2">State</dt>
-            <dt class="col-sm-10">@address.State</dt>
+            <dd class="col-sm-10">@address.State</dd>
             <dt class="col-sm-2">ZipCode</dt>
-            <dt class="col-sm-10">@address.ZipCode</dt>
+            <dd class="col-sm-10">@address.ZipCode</dd>
             <dt class="col-sm-2">EmailAddress</dt>
             <dd class="col-sm-10">@user.EmailAddress</dd>
             <dt class="col-sm-2">DateOfBirth</dt>
@@ -45,11 +47,8 @@
             <dd class="col-sm-10">@user.PhoneNumber</dd>
             <dt class="col-sm-2">ShelterId</dt>
             <dd class="col-sm-10">@user.ShelterId</dd>
-            <dt class="col-sm-2">IsActive</dt>
-            <dd class="col-sm-10">@user.IsActive</dd>
         </dl>
         <div>
-            <a href="@($"/users/edit?id={user.Id}")">Edit</a> |
             <a href="@($"/users")">Back to List</a>
         </div>
     }
@@ -66,12 +65,13 @@
     {
         using var context = DbFactory.CreateDbContext();
         user = await context.User.FirstOrDefaultAsync(m => m.Id == Id);
-        address = await context.Address.FirstOrDefaultAsync(address => address.Id == user.AddressId);
-
+       
         if (user is null)
         {
             NavigationManager.NavigateTo("notfound");
         }
+
+        address = await context.Address.FirstOrDefaultAsync(address => address.Id == user.AddressId);
 
         if (address is null)
         {

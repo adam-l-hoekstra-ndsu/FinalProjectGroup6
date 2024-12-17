@@ -54,10 +54,6 @@
             <dt class="col-sm-2">ShelterId</dt>
             <dd class="col-sm-10">@dog.ShelterId</dd>
         </dl>
-        <dl class="row">
-            <dt class="col-sm-2">IsActive</dt>
-            <dd class="col-sm-10">@dog.IsActive</dd>
-        </dl>
         <EditForm method="post" Model="dog" OnValidSubmit="DeleteDog" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(dog is null)">Delete</button> |
             <a href="/dogs/search">Back to List</a>

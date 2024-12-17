@@ -1,4 +1,6 @@
 ﻿@page "/addresses/delete"
+@attribute [Authorize(Roles = "Administrator")]
+@using Microsoft.AspNetCore.Authorization
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models

@@ -64,12 +64,13 @@
                     <div class="text-center">
                         <a href="@("/dogs/search")" class="btn btn-primary">Back to Search</a>
                         <a>     </a>
-                        <a href="@("/error")" class="btn btn-primary">Contact Us</a>
                         <AuthorizeView>
                             <NotAuthorized>
+                                <a href="/login" class="btn btn-secondary">Login to Contact Us</a>
                                 <a href="/login" class="btn btn-secondary">Login to Adopt</a>
                             </NotAuthorized>
                             <Authorized>
+                                <a href="@("/messages")" class="btn btn-primary">Contact Us</a>
                                 <a href="@($"/adopt?id={dog.Id}")" class="btn btn-primary">Adopt</a>
                             </Authorized>
                         </AuthorizeView>

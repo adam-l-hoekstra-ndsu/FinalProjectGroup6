@@ -37,7 +37,6 @@ namespace FinalProjectGroup6.Data
                     Color = "White",
                     IsNeuteredSpayed = true,
                     ShelterId = shelters[0].Id,
-                    IsActive = true,
                 },
                 new Dog
                 {
@@ -51,7 +50,6 @@ namespace FinalProjectGroup6.Data
                     Color = "Yellow",
                     IsNeuteredSpayed = true,
                     ShelterId = shelters[0].Id,
-                    IsActive = true,
                 },
                 new Dog
                 {
@@ -65,7 +63,6 @@ namespace FinalProjectGroup6.Data
                     Color = "Black and Tan",
                     IsNeuteredSpayed = true,
                     ShelterId = shelters[1].Id,
-                    IsActive = true,
                 },
                 new Dog
                 {
@@ -79,7 +76,6 @@ namespace FinalProjectGroup6.Data
                     Color = "Golden",
                     IsNeuteredSpayed = true,
                     ShelterId = shelters[1].Id,
-                    IsActive = true,
                 },
                 new Dog
                 {
@@ -93,7 +89,6 @@ namespace FinalProjectGroup6.Data
                     Color = "Brindle",
                     IsNeuteredSpayed = false,
                     ShelterId = shelters[2].Id,
-                    IsActive = true,
                 },
                 new Dog
                 {
@@ -107,7 +102,6 @@ namespace FinalProjectGroup6.Data
                     Color = "Tri-color",
                     IsNeuteredSpayed = true,
                     ShelterId = shelters[2].Id,
-                    IsActive = true
                 });
             context.SaveChanges();
         }

@@ -1,4 +1,6 @@
 ﻿@page "/users"
+@attribute [Authorize(Roles = "Administrator")]
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models
@@ -22,7 +24,6 @@
     <PropertyColumn Property="user => user.DateOfBirth" />
     <PropertyColumn Property="user => user.PhoneNumber" />
     <PropertyColumn Property="user => user.ShelterId" />
-    <PropertyColumn Property="user => user.IsActive" />
 
     <TemplateColumn Context="user">
         <a href="@($"users/details?id={user.Id}")">Details</a>

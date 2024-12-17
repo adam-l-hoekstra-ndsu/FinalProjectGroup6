@@ -39,7 +39,6 @@ namespace FinalProjectGroup6.Data
                     DateOfBirth = new DateTime(2005, 2, 25, 0, 0, 0),
                     PhoneNumber = "9374691852",
                     ShelterId = null,
-                    IsActive = true
                 },
                 new User
                 {
@@ -53,7 +52,6 @@ namespace FinalProjectGroup6.Data
                     DateOfBirth = new DateTime(1990, 5, 15, 0, 0, 0),
                     PhoneNumber = "1234567890",
                     ShelterId = shelters[0].Id,
-                    IsActive = true
                 },
                 new User
                 {
@@ -67,7 +65,6 @@ namespace FinalProjectGroup6.Data
                     DateOfBirth = new DateTime(1988, 8, 22, 0, 0, 0),
                     PhoneNumber = "9876543210",
                     ShelterId = null,
-                    IsActive = true
                 });
             context.SaveChanges();
         }

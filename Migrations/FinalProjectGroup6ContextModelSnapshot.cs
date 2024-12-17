@@ -106,11 +106,9 @@ namespace FinalProjectGroup6.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("CustomerID")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("DogID")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("Experience")
@@ -170,9 +168,6 @@ namespace FinalProjectGroup6.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsNeuteredSpayed")
                         .HasColumnType("bit");
 
@@ -207,6 +202,7 @@ namespace FinalProjectGroup6.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Body")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Subject")

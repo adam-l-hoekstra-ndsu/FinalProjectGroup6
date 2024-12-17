@@ -5,14 +5,14 @@
 namespace FinalProjectGroup6.Migrations
 {
     /// <inheritdoc />
-    public partial class mssqllocal_migration_568 : Migration
+    public partial class mssqllocal_migration_123 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Size",
-                table: "Dogs",
+                name: "Body",
+                table: "Messages",
                 type: "nvarchar(max)",
                 nullable: false,
                 defaultValue: "",
@@ -25,8 +25,8 @@ namespace FinalProjectGroup6.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterColumn<string>(
-                name: "Size",
-                table: "Dogs",
+                name: "Body",
+                table: "Messages",
                 type: "nvarchar(max)",
                 nullable: true,
                 oldClrType: typeof(string),

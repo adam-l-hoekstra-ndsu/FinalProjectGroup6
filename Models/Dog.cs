@@ -26,6 +26,5 @@ namespace FinalProjectGroup6.Models
         public bool IsNeuteredSpayed { get; set; }
         [Required(ErrorMessage = "The shelter field is required")]
         public int ShelterId { get; set; }
-        public bool IsActive { get; set; }
     }
 }

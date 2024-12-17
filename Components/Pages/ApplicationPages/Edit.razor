@@ -11,7 +11,7 @@
 
 <h2>Application</h2>
 
-<p>After editing you will be redirected to your Review Applications Page.</p>
+<p>After editing you will be redirected to your Home Page.</p>
 <hr />
 @if (Application is null)
 {
@@ -28,33 +28,35 @@ else
                 <div class="mb-3">
                     <label for="status" class="form-label">Status:</label>
                     <InputRadioGroup @bind-Value="Application.Status" class="form-control">
-                        <InputRadio Value=@getString("Not Reviewed") /> Not Reviewed
-                        <InputRadio Value=@getString("Approved") /> Approved
-                        <InputRadio Value=@getString("Rejected") /> Rejected
+                        <div>
+                            <InputRadio Value=@getString("Not Reviewed") /> Not Reviewed
+                            <InputRadio Value=@getString("Approved") /> Approved
+                            <InputRadio Value=@getString("Rejected") /> Rejected
+                        </div>
                     </InputRadioGroup>
                 </div>
                 <div class="mb-3">
-                    <label for="submitdate" class="form-label">SubmitDate:</label>
+                    <label for="submitdate" class="form-label">Submit Date:</label>
                     <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" />
                     <ValidationMessage For="() => Application.SubmitDate" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="reviewdate" class="form-label">ReviewDate:</label>
+                    <label for="reviewdate" class="form-label">Review Date:</label>
                     <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" />
                     <ValidationMessage For="() => Application.ReviewDate" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="whyhavedog" class="form-label">WhyHaveDog:</label>
+                    <label for="whyhavedog" class="form-label">Reason for Wanting a Dog:</label>
                     <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" />
                     <ValidationMessage For="() => Application.WhyHaveDog" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="experience" class="form-label">Experience:</label>
+                    <label for="experience" class="form-label">Previous Pet Experience:</label>
                     <InputText id="experience" @bind-Value="Application.Experience" class="form-control" />
                     <ValidationMessage For="() => Application.Experience" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="numpetsowned" class="form-label">NumPetsOwned:</label>
+                    <label for="numpetsowned" class="form-label">Number of Pets Owned Currently:</label>
                     <InputNumber id="numpetsowned" @bind-Value="Application.NumPetsOwned" class="form-control" />
                     <ValidationMessage For="() => Application.NumPetsOwned" class="text-danger" />
                 </div>
@@ -64,22 +66,22 @@ else
                     <ValidationMessage For="() => Application.Activities" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="inside" class="form-label">Inside:</label>
+                    <label for="inside" class="form-label">Dog Will Live Inside?:</label>
                     <InputCheckbox id="inside" @bind-Value="Application.Inside" class="form-check-input" />
                     <ValidationMessage For="() => Application.Inside" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="hrsleftalone" class="form-label">HrsLeftAlone:</label>
+                    <label for="hrsleftalone" class="form-label">Hours Left Alone Weekly:</label>
                     <InputNumber id="hrsleftalone" @bind-Value="Application.HrsLeftAlone" class="form-control" />
                     <ValidationMessage For="() => Application.HrsLeftAlone" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="canprovidecare" class="form-label">CanProvideCare:</label>
+                    <label for="canprovidecare" class="form-label">Can Provide Care:</label>
                     <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" />
                     <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" />
                 </div>
                 <div class="mb-3">
-                    <label for="rejectreason" class="form-label">RejectReason:</label>
+                    <label for="rejectreason" class="form-label">Reason for Rejection (if applicable):</label>
                     <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" />
                     <ValidationMessage For="() => Application.RejectReason" class="text-danger" />
                 </div>
@@ -123,9 +125,12 @@ else
     {
         using var context = DbFactory.CreateDbContext();
         context.Attach(Application!).State = EntityState.Modified;
+        context.Attach(dog!).State = EntityState.Modified;
 
         try
         {
+            Console.WriteLine(dog.Status);
+            await context.SaveChangesAsync();
             if(Application.Status == "Not Reviewed"){
                 dog.Status = 1;
             }
@@ -149,7 +154,7 @@ else
             }
         }
 
-        NavigationManager.NavigateTo("/applications/review");
+        NavigationManager.NavigateTo("/");
     }
 
     private bool ApplicationExists(int id)

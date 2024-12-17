@@ -1,4 +1,6 @@
 ﻿@page "/addresses/create"
+@attribute [Authorize(Roles = "Administrator, ShelterEmployee")]
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
