@@ -28,7 +28,7 @@ public class ApplicationSeedData
             new Application
             {
                 DogID = dogs[1].Id,
-                CustomerID = users[2].Id,
+                CustomerID = users[1].Id,
                 Status = "Approved",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 ReviewDate = DateOnly.FromDateTime(DateTime.Now),
@@ -43,7 +43,7 @@ public class ApplicationSeedData
             new Application
             {
                 DogID = dogs[0].Id,
-                CustomerID = users[4].Id,
+                CustomerID = users[2].Id,
                 Status = "Rejected",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 ReviewDate = DateOnly.FromDateTime(DateTime.Now),
@@ -59,7 +59,7 @@ public class ApplicationSeedData
             new Application
             {
                 DogID = dogs[3].Id,
-                CustomerID = users[3].Id,
+                CustomerID = users[2].Id,
                 Status = "Not Reviewed",
                 SubmitDate = DateOnly.FromDateTime(DateTime.Now),
                 WhyHaveDog = "I want another dog who I can come home to after work.",
@@ -68,21 +68,6 @@ public class ApplicationSeedData
                 Activities = "I go on walks often and have lots of space to run and play even.",
                 Inside = true,
                 HrsLeftAlone = 30,
-                CanProvideCare = true,
-            },
-            new Application
-            {
-                DogID = dogs[5].Id,
-                CustomerID = users[0].Id,
-                Status = "Approved",
-                SubmitDate = DateOnly.FromDateTime(DateTime.Now),
-                ReviewDate = DateOnly.FromDateTime(DateTime.Now),
-                WhyHaveDog = "My husband and I want to get our pets another friend to play with.",
-                Experience = "We already have 3 dogs and a cat who we love very much.",
-                NumPetsOwned = 2,
-                Activities = "A large farm to run around, trips to the dog park, hunting",
-                Inside = false,
-                HrsLeftAlone = 15,
                 CanProvideCare = true,
             });
 

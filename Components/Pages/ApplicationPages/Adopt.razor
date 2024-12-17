@@ -19,12 +19,6 @@
         <EditForm method="post" Model="Application" OnValidSubmit="AddApplication" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
-
-            <div class="mb-3">
-                <label for="submitdate" class="form-label">Submission Date:</label> 
-                <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" /> 
-                <ValidationMessage For="() => Application.SubmitDate" class="text-danger" /> 
-            </div> 
             <div class="mb-3">
                 <label for="whyhavedog" class="form-label">Reason for wanting a dog:</label> 
                 <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" /> 
@@ -117,6 +111,7 @@
 
         // Set the DogID
         Application.DogID = Id;
+        Application.SubmitDate = DateOnly.FromDateTime(DateTime.Now);
 
 
         

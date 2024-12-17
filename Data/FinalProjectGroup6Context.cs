@@ -66,7 +66,7 @@ namespace FinalProjectGroup6.Data
             // Map Application entity to a specific table
             modelBuilder.Entity<Application>(entity =>
             {
-                entity.ToTable("Applications"); // Specify the table name
+                entity.ToTable("Application"); // Specify the table name
             });
         }
     }

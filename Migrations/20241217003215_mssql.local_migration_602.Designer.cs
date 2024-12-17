@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FinalProjectGroup6.Migrations
 {
     [DbContext(typeof(FinalProjectGroup6Context))]
-    [Migration("20241217001836_mssql_migration_677")]
-    partial class mssql_migration_677
+    [Migration("20241217003215_mssql.local_migration_602")]
+    partial class mssqllocal_migration_602
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -146,7 +146,7 @@ namespace FinalProjectGroup6.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Applications", (string)null);
+                    b.ToTable("Application", (string)null);
                 });
 
             modelBuilder.Entity("FinalProjectGroup6.Models.Dog", b =>

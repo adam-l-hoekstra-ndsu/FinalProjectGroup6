@@ -143,7 +143,7 @@ namespace FinalProjectGroup6.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Applications", (string)null);
+                    b.ToTable("Application", (string)null);
                 });
 
             modelBuilder.Entity("FinalProjectGroup6.Models.Dog", b =>
