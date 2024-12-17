@@ -168,6 +168,9 @@ namespace FinalProjectGroup6.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsNeuteredSpayed")
                         .HasColumnType("bit");
 

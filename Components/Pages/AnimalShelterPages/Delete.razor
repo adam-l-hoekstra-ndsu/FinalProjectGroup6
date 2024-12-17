@@ -67,6 +67,6 @@
         using var context = DbFactory.CreateDbContext();
         context.AnimalShelter.Remove(animalshelter!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/animalshelters/searc");
+        NavigationManager.NavigateTo("/animalshelters/search");
     }
 }
