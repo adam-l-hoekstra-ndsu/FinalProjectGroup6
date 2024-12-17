@@ -30,43 +30,43 @@ namespace FinalProjectGroup6.Data
             // Map AnimalShelter entity to a specific table
             modelBuilder.Entity<AnimalShelter>(entity =>
             {
-                entity.ToTable("AnimalShelter"); // Specify the table name
+                entity.ToTable("AnimalShelters"); // Specify the table name
             });
 
             // Map Address entity to a specific table
             modelBuilder.Entity<Address>(entity =>
             {
-                entity.ToTable("Address"); // Specify the table name
+                entity.ToTable("Addresses"); // Specify the table name
             });
 
             // Map Dog entity to a specific table
             modelBuilder.Entity<Dog>(entity =>
             {
-                entity.ToTable("Dog"); // Specify the table name
+                entity.ToTable("Dogs"); // Specify the table name
             });
 
             // Map User entity to a specific table
             modelBuilder.Entity<User>(entity =>
             {
-                entity.ToTable("User"); // Specify the table name
+                entity.ToTable("Users"); // Specify the table name
             });
 
             // Map PasswordResetToken entity to a specific table
             modelBuilder.Entity<PasswordResetToken>(entity =>
             {
-                entity.ToTable("PasswordResetToken"); // Specify the table name
+                entity.ToTable("PasswordResetTokens"); // Specify the table name
             });
 
             // Map Message entity to a specific table
             modelBuilder.Entity<Message>(entity =>
             {
-                entity.ToTable("Message"); // Specify the table name
+                entity.ToTable("Messages"); // Specify the table name
             });
 
             // Map Application entity to a specific table
             modelBuilder.Entity<Application>(entity =>
             {
-                entity.ToTable("Application"); // Specify the table name
+                entity.ToTable("Applications"); // Specify the table name
             });
         }
     }
