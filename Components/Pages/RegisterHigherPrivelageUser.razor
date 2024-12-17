@@ -260,6 +260,8 @@
                 NewUserAddressModel.User.ShelterId = null;
             }
 
+            NewUserAddressModel.User.IsActive = true;
+
             // Add Address to the database first
             context.Address.Add(NewUserAddressModel.Address);
             await context.SaveChangesAsync();
