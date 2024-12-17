@@ -1,4 +1,5 @@
 ﻿@page "/dogs/create"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -21,64 +22,94 @@
                 <ValidationMessage For="() => Dog.Picture" class="text-danger" /> 
             </div>        
             <div class="mb-3">
-                <label for="status" class="form-label">Status:</label> 
-                <InputNumber id="status" @bind-Value="Dog.Status" class="form-control" /> 
-                <ValidationMessage For="() => Dog.Status" class="text-danger" /> 
-            </div>        
+                <InputRadioGroup @bind-Value="Dog.Status" class="form-control">
+                    <InputRadio Value="0" /> Avaliable
+                    <InputRadio Value="1" /> Pending
+                    <InputRadio Value="2" /> Adopted
+                </InputRadioGroup>
+            </div>
             <div class="mb-3">
-                <label for="name" class="form-label">Name:</label> 
-                <InputText id="name" @bind-Value="Dog.Name" class="form-control" /> 
-                <ValidationMessage For="() => Dog.Name" class="text-danger" /> 
-            </div>        
+                <label for="name" class="form-label">Name:</label>
+                <InputText id="name" @bind-Value="Dog.Name" class="form-control" />
+                <ValidationMessage For="() => Dog.Name" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="gender" class="form-label">Gender:</label> 
-                <InputText id="gender" @bind-Value="Dog.Gender" class="form-check-input" /> 
-                <ValidationMessage For="() => Dog.Gender" class="text-danger" /> 
-            </div>        
+                <InputRadioGroup @bind-Value="Dog.Gender" class="form-control">
+                    <InputRadio Value="@getGender('f')" /> Female
+                    <InputRadio Value="@getGender('m')" /> Male
+                </InputRadioGroup>
+            </div>
             <div class="mb-3">
-                <label for="breed" class="form-label">Breed:</label> 
-                <InputText id="breed" @bind-Value="Dog.Breed" class="form-control" /> 
-                <ValidationMessage For="() => Dog.Breed" class="text-danger" /> 
-            </div>        
+                <label for="breed" class="form-label">Breed:</label>
+                <InputText id="breed" @bind-Value="Dog.Breed" class="form-control" />
+                <ValidationMessage For="() => Dog.Breed" class="text-danger" />
+            </div>
+            <div>
+                <label for="sizeSelect">Size:</label>
+                <InputSelect id="sizeSelect" @bind-Value="Dog.Size">
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </InputSelect>
+            </div>
             <div class="mb-3">
-                <label for="age" class="form-label">Age:</label> 
-                <InputNumber id="age" @bind-Value="Dog.Age" class="form-control" /> 
-                <ValidationMessage For="() => Dog.Age" class="text-danger" /> 
-            </div>        
+                <label for="age" class="form-label">Age:</label>
+                <InputNumber id="age" @bind-Value="Dog.Age" class="form-control" />
+                <ValidationMessage For="() => Dog.Age" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="color" class="form-label">Color:</label> 
-                <InputText id="color" @bind-Value="Dog.Color" class="form-control" /> 
-                <ValidationMessage For="() => Dog.Color" class="text-danger" /> 
-            </div>        
+                <label for="color" class="form-label">Color:</label>
+                <InputText id="color" @bind-Value="Dog.Color" class="form-control" />
+                <ValidationMessage For="() => Dog.Color" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="isneuteredsprayed" class="form-label">IsNeuteredSprayed:</label> 
-                <InputCheckbox id="isneuteredsprayed" @bind-Value="Dog.IsNeuteredSpayed" class="form-check-input" /> 
-                <ValidationMessage For="() => Dog.IsNeuteredSpayed" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="shelterid" class="form-label">ShelterId:</label> 
-                <InputNumber id="shelterid" @bind-Value="Dog.ShelterId" class="form-control" /> 
-                <ValidationMessage For="() => Dog.ShelterId" class="text-danger" /> 
-            </div>                
-            <button type="submit" class="btn btn-primary">Create</button>
+                <label for="isneuteredsprayed" class="form-label">Is Neutered/Sprayed:</label>
+                <InputCheckbox id="isneuteredsprayed" @bind-Value="Dog.IsNeuteredSpayed" class="form-check-input" />
+                <ValidationMessage For="() => Dog.IsNeuteredSpayed" class="text-danger" />
+            </div>
+            <div>
+                <label for="shelterSelect">Shelter:</label>
+                <InputSelect id="shelterSelect" @bind-Value="Dog.ShelterId">
+                    @foreach (var shelter in shelters)
+                    {
+                        <option value="@shelter.Id">@shelter.Name</option>
+                    }
+                </InputSelect>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
         </EditForm>
     </div>
 </div>
 
 <div>
-    <a href="/dogs">Back to List</a>
+    <a href="/dogs/search">Back to List</a>
 </div>
 
 @code {
+    private List<AnimalShelter>? shelters;
+
     [SupplyParameterFromForm]
     private Dog Dog { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        using var context = DbFactory.CreateDbContext();
+        shelters = context.AnimalShelter.ToList();
+    }
 
     // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
     private async Task AddDog()
     {
         using var context = DbFactory.CreateDbContext();
+        //Dog.IsActive = true;
         context.Dog.Add(Dog);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/dogs");
+        NavigationManager.NavigateTo("/dogs/search");
+    }
+
+    private string getGender(char gender)
+    {
+        if (gender == 'f') return "Female";
+        return "Male";
     }
 }

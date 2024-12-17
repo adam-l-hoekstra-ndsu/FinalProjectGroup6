@@ -1,40 +1,92 @@
 ﻿@page "/messages"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models
 @using FinalProjectGroup6.Data
+@using Microsoft.AspNetCore.Components.Authorization
 @implements IAsyncDisposable
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Index</PageTitle>
 
 <h1>Messages</h1>
 
 <p>
-    <a href="messages/create">Create New</a>
+    <a href="messages/create" class="btn btn-primary">Create New Message</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Message">
-    <PropertyColumn Property="message => message.UserSentFrom" />
-    <PropertyColumn Property="message => message.UserSentTo" />
-    <PropertyColumn Property="message => message.Timestamp" />
-    <PropertyColumn Property="message => message.Subject" />
-    <PropertyColumn Property="message => message.Body" />
+<QuickGrid Class="table" Items="filteredMessages">
+    <PropertyColumn Property="message => getUserFullName(message, true)" Title="Sent From" Sortable="true"/>
+    <PropertyColumn Property="message => getUserFullName(message, false)" Title="Sent To" Sortable="true" />
+    <PropertyColumn Property="message => message.Timestamp" Title="Time Sent" Sortable="true" />
+    <PropertyColumn Property="message => message.Subject" Title="Subject" />
+    <PropertyColumn Property="message => message.Body" Title="Message" />
 
     <TemplateColumn Context="message">
-        <a href="@($"messages/edit?id={message.Id}")">Edit</a> |
-        <a href="@($"messages/details?id={message.Id}")">Details</a> |
-        <a href="@($"messages/delete?id={message.Id}")">Delete</a>
+        <a href="@($"messages/details?id={message.Id}")" class="btn btn-primary">Details</a>
+        <a href="@($"messages/reply?id={message.Id}")" class="btn btn-primary">Reply</a>
+        <a href="@($"messages/delete?id={message.Id}")" class="btn btn-danger">Delete</a>
     </TemplateColumn>
 </QuickGrid>
 
 @code {
+    private List<User> users;
+    private User? activeUser;
+    private IQueryable<Message> filteredMessages;
+    private int userId = -1;
+
     private FinalProjectGroup6Context context = default!;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         context = DbFactory.CreateDbContext();
+        users = context.User.ToList();
+
+        // Get the Authentication State
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+
+        // Get the user
+        var user = authState.User;
+
+        // Check if the user is authenticated
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            // Extract the id claim
+            var idClaim = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.NameIdentifier);
+
+
+            if (idClaim != null)
+            {
+                userId = Convert.ToInt32(idClaim.Value);
+                activeUser = context.User.FirstOrDefault(u => u.Id == userId);
+            }
+        }
+
+        if(activeUser != null)
+        {
+            if (activeUser.Role == "Adiministrator") filteredMessages = context.Message;
+            else filteredMessages = from x in context.Message
+                                    where (x.UserSentFrom == activeUser.Id) || (x.UserSentTo == activeUser.Id)
+                                    select x;
+        }
     }
 
     public async ValueTask DisposeAsync() => await context.DisposeAsync();
+
+    private string getUserFullName(Message message, bool sentFrom)
+    {
+        if(sentFrom) {
+            foreach(var user in users)
+            {
+                if (message.UserSentFrom == user.Id) return $"{user.FirstName} {user.LastName}";
+            }
+        }
+        foreach (var user in users)
+        {
+            if (message.UserSentTo == user.Id) return $"{user.FirstName} {user.LastName}";
+        }
+        return "User Not Found";
+    }
 }

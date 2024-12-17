@@ -26,8 +26,6 @@
         </div>
 
         <div class="nav-item px-3">
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="events" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Events
             </NavLink>
@@ -38,26 +36,37 @@
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Success Stories
             </NavLink>
         </div>
-
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="/dogs/search" Match="NavLinkMatch.All">
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Dogs
             </NavLink>
         </div>
-
-        <AuthorizeView Roles="Administrator">
+        <AuthorizeView Roles="ShelterEmployee">
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/animalshelters" Match="NavLinkMatch.All">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Animal Shelters
-                    </NavLink>
+                <NavLink class="nav-link" href="/applications/review" Match="NavLinkMatch.All">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage/Review Shelter Applications
+                </NavLink>
                 </div>
+            </Authorized>
+        </AuthorizeView>
 
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/dogs" Match="NavLinkMatch.All">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Dogs
-                    </NavLink>
-                </div>
-
+        <AuthorizeView>
+            <Authorized>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/my-applications" Match="NavLinkMatch.All">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> My Applications
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+               <NavLink class="nav-link" href="/messages" Match="NavLinkMatch.All">
+                  <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Messages
+              </NavLink>
+            </div>
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Administrator">
+            <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/users" Match="NavLinkMatch.All">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Users
@@ -72,6 +81,11 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/messages" Match="NavLinkMatch.All">
                         <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage Messages
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/all-applications" Match="NavLinkMatch.All">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Manage All Applications
                     </NavLink>
                 </div>
             </Authorized>

@@ -1,8 +1,13 @@
 ﻿@page "/adopt"
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@using FinalProjectGroup6.Data
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Apply to Adopt</PageTitle>
 
@@ -14,31 +19,12 @@
         <EditForm method="post" Model="Application" OnValidSubmit="AddApplication" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="dogid" class="form-label">Dog ID:</label> 
-                <InputText id="dogid" @bind-Value="Application.DogID" class="form-control" /> 
-                <ValidationMessage For="() => Application.DogID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="customerid" class="form-label">Customer ID:</label> 
-                <InputText id="customerid" @bind-Value="Application.CustomerID" class="form-control" /> 
-                <ValidationMessage For="() => Application.CustomerID" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="status" class="form-label">Application Status:</label> 
-                <InputText id="status" @bind-Value="Application.Status" class="form-control" /> 
-                <ValidationMessage For="() => Application.Status" class="text-danger" /> 
-            </div>        
+
             <div class="mb-3">
                 <label for="submitdate" class="form-label">Submission Date:</label> 
                 <InputDate id="submitdate" @bind-Value="Application.SubmitDate" class="form-control" /> 
                 <ValidationMessage For="() => Application.SubmitDate" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="reviewdate" class="form-label">Review Date:</label> 
-                <InputDate id="reviewdate" @bind-Value="Application.ReviewDate" class="form-control" /> 
-                <ValidationMessage For="() => Application.ReviewDate" class="text-danger" /> 
-            </div>        
+            </div> 
             <div class="mb-3">
                 <label for="whyhavedog" class="form-label">Reason for wanting a dog:</label> 
                 <InputText id="whyhavedog" @bind-Value="Application.WhyHaveDog" class="form-control" /> 
@@ -73,31 +59,102 @@
                 <label for="canprovidecare" class="form-label">Check the box below if you are able to consistently provide veterinary care:</label> 
                 <InputCheckbox id="canprovidecare" @bind-Value="Application.CanProvideCare" class="form-check-input" /> 
                 <ValidationMessage For="() => Application.CanProvideCare" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="rejectreason" class="form-label">Reason for Rejection (if any):</label> 
-                <InputText id="rejectreason" @bind-Value="Application.RejectReason" class="form-control" /> 
-                <ValidationMessage For="() => Application.RejectReason" class="text-danger" /> 
-            </div>        
+            </div>
             <button type="submit" class="btn btn-primary">Submit Adoption Application</button>
+            <br />
+            <br />
+            <a class="btn btn-secondary" href ="@("/dogs/search")">Back to Dogs</a>
         </EditForm>
     </div>
 </div>
 
-<div>
-    <a href="/applications">Back to List</a>
-</div>
-
 @code {
+    private FinalProjectGroup6Context context = default;
+    private Dog? dog;
+
+    [SupplyParameterFromQuery]
+    private int Id{ get; set; }
+
     [SupplyParameterFromForm]
     private Application Application { get; set; } = new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+        // Assign Dog to change status.
+        dog = context.Dog.FirstOrDefault(m => m.Id == Id);
+    }
+
     private async Task AddApplication()
     {
-        using var context = DbFactory.CreateDbContext();
+        // Set initial status based on pet count and care ability
+        getInitialStatus();
+
+        // Retrieve the currently logged-in user's ID from claims
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user?.Identity?.IsAuthenticated == true)
+        {
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim is not null)
+            {
+                Application.CustomerID = int.Parse(userIdClaim.Value); // Set the CustomerID
+            }
+            else
+            {
+                // Handle case where user ID claim is missing
+                NavigationManager.NavigateTo("/error");
+                return;
+            }
+        }
+        else
+        {
+            // Handle unauthenticated user
+            NavigationManager.NavigateTo("/error");
+            return;
+        }
+
+        // Set the DogID
+        Application.DogID = Id;
+
+
+        
+
         context.Application.Add(Application);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/applications");
+
+        NavigationManager.NavigateTo("/my-applications");
+    }
+
+    private void getInitialStatus()
+    {
+        // Set the status to "Rejected" if number of pets is 5 or more,
+        // or if the user cannot provide care
+        if (Application.NumPetsOwned >= 5 || !Application.CanProvideCare)
+        {
+            Application.Status = "Rejected";
+
+            // Set the reason for rejection
+            if(Application.CanProvideCare)
+            {
+                // If the user has too many pets but can provide care
+                Application.RejectReason = "Policy: A customer can not adopt a dog if they already have 5 or more pets.";
+            }else if(Application.NumPetsOwned < 5)
+            {
+                // If the user cannot provide care but does not have too many pets
+                Application.RejectReason = "Policy: A customer can not adopt a dog if they are unable to provide consistent veterinary care.";
+            } else
+            {
+                // If the user can't provide care and also has too many pets
+                Application.RejectReason = "Policy: A customer must be able to provide veterinary care and must not already own 5 or more pets";
+            }
+        }
+        // Set status to "Not Reviewed" if less than 5 pets and can provide care
+        else if (Application.NumPetsOwned < 5 && Application.CanProvideCare)
+        {
+            Application.Status = "Not Reviewed";
+            dog.Status = 1;
+        }
     }
 }

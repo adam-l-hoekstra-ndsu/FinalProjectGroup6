@@ -1,6 +1,7 @@
 ﻿@page "/addresses/edit"
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize(Roles = "None")]
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -51,7 +52,7 @@ else
 }
 
 <div>
-    <a href="/addresses">Back to List</a>
+    <a href="/addresses">Cancel</a>
 </div>
 
 @code {

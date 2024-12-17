@@ -1,4 +1,5 @@
 ﻿@page "/animalshelters/delete"
+@rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using FinalProjectGroup6.Models
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
@@ -39,7 +40,7 @@
         </dl>
         <EditForm method="post" Model="animalshelter" OnValidSubmit="DeleteAnimalShelter" FormName="delete" Enhance>
             <button type="submit" class="btn btn-danger" disabled="@(animalshelter is null)">Delete</button> |
-            <a href="/animalshelters">Back to List</a>
+            <a href="/animalshelters/search">Back to List</a>
         </EditForm>
     }
 </div>
@@ -66,6 +67,6 @@
         using var context = DbFactory.CreateDbContext();
         context.AnimalShelter.Remove(animalshelter!);
         await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/animalshelters");
+        NavigationManager.NavigateTo("/animalshelters/searc");
     }
 }

@@ -1,18 +1,17 @@
-﻿@page "/applications"
+﻿@page "/all-applications"
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using FinalProjectGroup6.Models
 @using FinalProjectGroup6.Data
 @implements IAsyncDisposable
 @inject IDbContextFactory<FinalProjectGroup6.Data.FinalProjectGroup6Context> DbFactory
+@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.Authorization
 
 <PageTitle>View Applications</PageTitle>
 
 <h1>View Applications</h1>
-
-<p>
-    <a href="/adopt">Create New</a>
-</p>
 
 <QuickGrid Class="table" Items="context.Application">
     <PropertyColumn Property="application => application.DogID" />
